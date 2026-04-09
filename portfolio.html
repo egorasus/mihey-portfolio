@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mihey Sound</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --gray: #c8c8c8;
+  --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --hand: 'Caveat', cursive;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font); background: var(--white); color: var(--black); overflow-x: hidden; cursor: none; }
+
+#cursor { position: fixed; width: 10px; height: 10px; background: var(--black); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width .2s, height .2s; mix-blend-mode: difference; }
+body.hovering #cursor { width: 36px; height: 36px; }
+
+/* ── NAV ── */
+.site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 22px 32px; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: .5px solid transparent; transition: border-color .3s; }
+.site-nav.scrolled { border-color: #e0e0e0; }
+.nav-logo { font-size: 15px; font-weight: 500; letter-spacing: -.02em; text-decoration: none; color: var(--black); cursor: pointer; background: none; border: none; font-family: var(--font); }
+.nav-links { display: flex; gap: 28px; align-items: center; }
+.nav-links a { font-size: 14px; color: var(--black); text-decoration: none; position: relative; }
+.nav-links a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: .5px; background: var(--black); transition: width .25s; }
+.nav-links a:hover::after { width: 100%; }
+.nav-back { font-size: 14px; color: #888; cursor: pointer; background: none; border: none; font-family: var(--font); transition: color .2s; }
+.nav-back:hover { color: var(--black); }
+
+/* ── HERO ── */
+#hero { position: relative; width: 100%; height: 100vh; min-height: 600px; overflow: hidden; background: #fff; }
+.hero-img-wrap {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 0;
+  width: 56%;
+  max-width: 680px;
+  height: 100%;
+  display: flex; align-items: flex-end;
+}
+.hero-img {
+  width: 100%; height: 110%;
+  object-fit: cover;
+  object-position: center 15%;
+  display: block;
+  mix-blend-mode: multiply;
+  filter: grayscale(1) contrast(1.08) brightness(1.05);
+  opacity: 0; transition: opacity 1.2s ease;
+}
+.hero-img.loaded { opacity: 1; }
+.hero-dt { position: absolute; top: 9%; left: 2%; font-family: var(--mono); font-size: 11px; color: var(--black); line-height: 1.6; opacity: .55; font-weight: 300; white-space: pre; }
+.hero-lbl { position: absolute; font-size: 13px; letter-spacing: .02em; color: var(--black); line-height: 1.3; opacity: 0; animation: fadeUp .6s ease forwards; }
+.hero-lbl .star { display: block; font-size: 11px; margin-top: 2px; }
+.hero-lbl.dj      { top: 9%;  left: 36%; animation-delay: .2s; }
+.hero-lbl.creator { top: 22%; left: 22%; animation-delay: .4s; }
+.hero-lbl.model   { top: 20%; left: 65%; animation-delay: .3s; }
+.hero-lbl.stylist { top: 44%; left: 22%; animation-delay: .5s; }
+.hero-lbl.girl    { top: 54%; left: 65%; animation-delay: .35s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── WORKS ── */
+#works { padding: 80px 32px 0; }
+.works-h { font-size: clamp(36px,7vw,88px); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 64px; }
+.fw { display: inline; color: var(--gray); cursor: pointer; transition: color .2s; user-select: none; }
+.fw:hover, .fw.active { color: var(--black); }
+
+/* ── GRID ── */
+.grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 500px)  { .grid { grid-template-columns: 1fr; } }
+.card { cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .5s; }
+.card.visible { opacity: 1; transform: translateY(0); }
+.card-thumb { aspect-ratio: 3/4; overflow: hidden; position: relative; }
+.card-inner { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .5s; }
+.card:hover .card-inner { transform: scale(1.04); }
+.card-info { margin-top: 12px; }
+.card-title { font-size: 13px; font-weight: 500; }
+.card-sub { font-family: var(--mono); font-size: 11px; color: #888; margin-top: 4px; font-weight: 300; }
+
+/* ── MAIN FOOTER ── */
+.site-footer { margin-top: 120px; border-top: .5px solid #e8e8e8; padding: 48px 32px 0; }
+.footer-meta { display: grid; grid-template-columns: 1fr auto auto; gap: 64px; align-items: start; padding-bottom: 48px; }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: #999; font-weight: 300; }
+.fcol-label { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #bbb; margin-bottom: 12px; }
+.fcol a, .fcol span { display: block; font-size: 13px; color: var(--black); text-decoration: none; margin-bottom: 6px; transition: opacity .2s; }
+.fcol a:hover { opacity: .5; }
+.footer-wm { font-size: clamp(60px,12vw,160px); font-weight: 700; letter-spacing: -.04em; color: #eaeaea; line-height: 1; padding-bottom: 8px; user-select: none; white-space: nowrap; overflow: hidden; }
+
+/* ── PROJECT PAGE ── */
+#pp { display: none; position: fixed; inset: 0; background: var(--white); overflow-y: auto; z-index: 400; opacity: 0; transition: opacity .35s; }
+#pp.open { display: block; }
+#pp.visible { opacity: 1; }
+
+.proj-hero-ph { width: 100%; aspect-ratio: 16/7; display: flex; align-items: center; justify-content: center; }
+
+.proj-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; padding: 52px 32px; border-bottom: .5px solid #eee; }
+.proj-name { font-size: clamp(28px,4vw,52px); font-weight: 700; letter-spacing: -.03em; line-height: 1.05; }
+.proj-sub { font-family: var(--mono); font-size: 12px; color: #888; margin-top: 8px; font-weight: 300; }
+.pdl { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #bbb; margin-bottom: 8px; margin-top: 24px; }
+.pdl:first-child { margin-top: 0; }
+.pdt { font-family: var(--mono); font-size: 12px; color: #555; line-height: 1.7; font-weight: 300; }
+.ptags { display: flex; gap: 8px; flex-wrap: wrap; }
+.ptag { padding: 5px 14px; border: .5px solid #ccc; border-radius: 100px; font-family: var(--mono); font-size: 11px; color: #555; font-weight: 300; }
+.pyr { font-family: var(--mono); font-size: 13px; }
+
+/* gallery */
+.gal-wrap { display: grid; grid-template-columns: 88px 1fr; padding: 48px 0; }
+.gal-side { position: sticky; top: 72px; height: calc(100vh - 100px); overflow-y: auto; padding: 0 0 0 32px; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; align-self: start; }
+.gal-side::-webkit-scrollbar { display: none; }
+.thumb-btn { width: 56px; height: 44px; border: 1.5px solid transparent; cursor: pointer; flex-shrink: 0; transition: border-color .2s, opacity .2s; opacity: .4; }
+.thumb-btn.active, .thumb-btn:hover { opacity: 1; border-color: var(--black); }
+.gal-imgs { padding: 0 32px; display: flex; flex-direction: column; gap: 4px; }
+.img-ph { width: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: rgba(128,128,128,.5); font-weight: 300; }
+.img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.img-cap { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 12px; padding-bottom: 48px; }
+.cap-txt { font-family: var(--mono); font-size: 11px; color: #999; line-height: 1.5; font-weight: 300; }
+
+/* credits */
+.credits { display: grid; grid-template-columns: 200px 1fr; gap: 64px; padding: 64px 32px; border-top: .5px solid #eee; }
+.cr-label { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #bbb; }
+.cr-grid { display: flex; flex-wrap: wrap; gap: 40px; }
+.cr-role { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #bbb; margin-bottom: 4px; }
+.cr-name { font-size: 14px; }
+
+/* next project */
+.next-wrap { padding: 40px 32px; }
+.next-btn { border: .5px solid #ddd; border-radius: 12px; padding: 36px 40px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color .25s; }
+.next-btn:hover { border-color: var(--black); }
+.next-lbl { font-family: var(--mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: #bbb; margin-bottom: 6px; }
+.next-title { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+.next-arr { font-size: 28px; }
+
+/* proj footer */
+.proj-footer { border-top: .5px solid #eee; padding: 48px 32px 0; }
+.pf-meta { display: grid; grid-template-columns: 1fr auto auto; gap: 64px; align-items: start; padding-bottom: 48px; }
+.footer-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #aaa; cursor: pointer; margin-top: 8px; background: none; border: none; font-family: var(--font); transition: color .2s; padding: 0; }
+.footer-back:hover { color: var(--black); }
+.pf-wm { display: block; width: 100%; }
+
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.anim { opacity: 0; animation: slideUp .7s ease forwards; animation-play-state: paused; }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- ═══ MAIN PAGE ═══ -->
+<div id="main">
+
+  <nav class="site-nav" id="main-nav">
+    <a href="#" class="nav-logo">Mihey Sound</a>
+    <div class="nav-links">
+      <a href="#works">Кейсы</a>
+      <a href="#">Паки</a>
+      <a href="#">Связаться</a>
+    </div>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-dt" id="hero-time"></div>
+    <div class="hero-lbl dj">DJ<span class="star">★</span></div>
+    <div class="hero-lbl creator">Creator<span class="star">★</span></div>
+    <div class="hero-lbl model">Model<span class="star">★</span></div>
+    <div class="hero-lbl stylist">Stylist<span class="star">★</span></div>
+    <div class="hero-lbl girl">Girl<span class="star">★</span></div>
+    <div class="hero-img-wrap">
+      <img class="hero-img" src="hero.jpg" alt="Mihey Sound" onload="this.classList.add('loaded')">
+    </div>
+  </section>
+
+  <section id="works">
+    <h2 class="works-h anim">
+      <span class="fw active" data-f="all">All,</span>&nbsp;<span class="fw" data-f="creative">Creative Direction,</span><br>
+      <span class="fw" data-f="graphic">Graphic Identity,</span> <span class="fw" data-f="digital">Digital,</span> <span class="fw" data-f="print">Print,</span><br>
+      <span class="fw" data-f="strategy">Strategy,</span> <span class="fw" data-f="motion">Motion</span>
+    </h2>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-meta">
+      <div class="footer-copy">©2024 Mihey Sound</div>
+      <div class="fcol">
+        <div class="fcol-label">Follow</div>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+      </div>
+      <div class="fcol">
+        <div class="fcol-label">Contact</div>
+        <span>hello [at] miheysound.com</span>
+      </div>
+    </div>
+    <div class="footer-wm">MIHEY SOUND</div>
+  </footer>
+
+</div>
+
+<!-- ═══ PROJECT PAGE ═══ -->
+<div id="pp">
+
+  <nav class="site-nav" id="pp-nav">
+    <button class="nav-logo" onclick="close_()">Mihey Sound</button>
+    <div class="nav-links">
+      <a href="#">Кейсы</a>
+      <a href="#">Паки</a>
+      <a href="#">Связаться</a>
+      <button class="nav-back" onclick="close_()">← Назад</button>
+    </div>
+  </nav>
+
+  <div id="pp-hero"></div>
+
+  <div class="proj-meta">
+    <div>
+      <div class="proj-name" id="pp-name"></div>
+      <div class="proj-sub"  id="pp-sub"></div>
+    </div>
+    <div>
+      <div class="pdl">Details</div>
+      <div class="pdt" id="pp-det"></div>
+      <div class="pdl">Services</div>
+      <div class="ptags" id="pp-svc"></div>
+      <div class="pdl">Year</div>
+      <div class="pyr" id="pp-yr"></div>
+    </div>
+  </div>
+
+  <div class="gal-wrap">
+    <div class="gal-side" id="pp-side"></div>
+    <div class="gal-imgs" id="pp-imgs"></div>
+  </div>
+
+  <div class="credits">
+    <div class="cr-label">Credits</div>
+    <div class="cr-grid" id="pp-cr"></div>
+  </div>
+
+  <div class="next-wrap">
+    <div class="next-btn" id="next-btn">
+      <div>
+        <div class="next-lbl">Next project</div>
+        <div class="next-title" id="next-title"></div>
+      </div>
+      <div class="next-arr">→</div>
+    </div>
+  </div>
+
+  <footer class="proj-footer">
+    <div class="pf-meta">
+      <div>
+        <div class="footer-copy">©2024 Mihey Sound</div>
+        <button class="footer-back" onclick="close_()">← Назад</button>
+      </div>
+      <div class="fcol">
+        <div class="fcol-label">Follow</div>
+        <a href="#">Instagram</a>
+        <a href="#">LinkedIn</a>
+      </div>
+      <div class="fcol">
+        <div class="fcol-label">Contact</div>
+        <span>hello [at] miheysound.com</span>
+      </div>
+    </div>
+    <svg class="pf-wm" viewBox="0 0 1000 110" preserveAspectRatio="none" style="height:auto;">
+      <text y="100" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-weight="700" fill="#eaeaea" font-size="115" textLength="1000" lengthAdjust="spacingAndGlyphs">MIHEY SOUND</text>
+    </svg>
+  </footer>
+
+</div>
+
+<script>
+const DATA = [
+  { id:1, title:'STRATA', sub:'Luxury Eyewear', tags:['creative','strategy'], year:'2023',
+    det:'A lifestyle brand offering elevated essentials for the music-inspired individuals as well as a premium apparel and accessories manufacturing program for select clientele.',
+    svc:['Production','Creative Strategy'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Photographer',n:'Stew Caldo'},{r:'Videographer',n:'Brett Blackwell'}],
+    hc:'#111', ic:['#1a1a1a','#2a2a3a','#1c2a1c','#222','#1a1c2a','#181818'] },
+  { id:2, title:'Neutra VDL', sub:'Brand Identity', tags:['graphic','print'], year:'2023',
+    det:'Complete brand identity system for an architectural firm rooted in clean geometric principles.',
+    svc:['Graphic Identity','Print'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Design',n:'Mihey Sound'}],
+    hc:'#e8e6e0', ic:['#dddad2','#e8e5de','#d5d2ca','#ccc9c0','#e0ddd5','#d8d5cc'] },
+  { id:3, title:'Alicia Keys', sub:'Campaign', tags:['creative','digital','motion'], year:'2024',
+    det:'Visual campaign and digital assets for album launch covering social, OOH and editorial.',
+    svc:['Creative Direction','Digital','Motion'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Motion',n:'Mihey Sound'}],
+    hc:'#c0392b', ic:['#b03020','#c0392b','#a52a1e','#d44030','#b82820','#902015'] },
+  { id:4, title:'PHNTM', sub:'Digital Experience', tags:['digital','strategy'], year:'2024',
+    det:'Full digital strategy and web experience for an emerging electronic music collective.',
+    svc:['Digital','Strategy'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Development',n:'Studio X'}],
+    hc:'#f0f0f0', ic:['#e8e8e8','#e0e0e0','#ebebeb','#f0f0f0','#e5e5e5','#ddd'] },
+  { id:5, title:'Goodfight', sub:'E-Commerce', tags:['digital','graphic'], year:'2023',
+    det:'E-commerce redesign and brand refresh for a menswear label.',
+    svc:['Digital','Graphic Identity'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'}],
+    hc:'#f0efeb', ic:['#eee','#e8e8e0','#e0dfd8','#ebe9e2','#e5e3dc','#dddbd4'] },
+  { id:6, title:'Deveaux NY', sub:'Print & Identity', tags:['print','graphic'], year:'2022',
+    det:'Seasonal lookbook design and brand collateral for DEVEAUX NEW YORK.',
+    svc:['Print','Graphic Identity'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Print',n:'Studio Z'}],
+    hc:'#eee', ic:['#e5e5e5','#ddd','#f0f0f0','#e8e8e8','#e0e0e0','#ececec'] },
+  { id:7, title:"Ain't No Mtn", sub:'Motion Graphics', tags:['motion','creative'], year:'2023',
+    det:'Title sequence and motion graphics for a documentary short film.',
+    svc:['Motion','Creative Direction'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Motion Design',n:'Mihey Sound'}],
+    hc:'#1a3a1a', ic:['#1a3a1a','#243a24','#1c321c','#203820','#182e18','#142a14'] },
+  { id:8, title:'Air EDP', sub:'Product Campaign', tags:['creative','print'], year:'2024',
+    det:'Luxury fragrance campaign with editorial photography direction and print collateral.',
+    svc:['Creative Direction','Print'],
+    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Photography',n:'Mihey Sound'}],
+    hc:'#0a0a0a', ic:['#0a0a0a','#121212','#0f0f0f','#0d0d0d','#111','#0e0e0e'] },
+];
+
+/* cursor */
+const cur = document.getElementById('cursor');
+document.addEventListener('mousemove', e => { cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px'; });
+function bindH() {
+  document.querySelectorAll('a,button,.fw,.card,.thumb-btn,.next-btn').forEach(el => {
+    el.addEventListener('mouseenter', () => document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave', () => document.body.classList.remove('hovering'));
+  });
+}
+bindH();
+
+/* clock */
+function tick() {
+  const n=new Date(), ds=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    ms=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('hero-time').textContent =
+    ds[n.getDay()]+', '+ms[n.getMonth()]+' '+n.getDate()+', '+n.getFullYear()+'\n'+
+    String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+}
+tick(); setInterval(tick,1000);
+
+/* nav scroll */
+window.addEventListener('scroll', () => document.getElementById('main-nav').classList.toggle('scrolled', scrollY>10));
+
+/* render cards */
+function renderCards(filter) {
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  const list = filter==='all' ? DATA : DATA.filter(p=>p.tags.includes(filter));
+  list.forEach((p,i) => {
+    const dark = parseInt(p.hc.replace('#',''),16) < 0x666666;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.transitionDelay = (i*.055)+'s';
+    card.innerHTML = `
+      <div class="card-thumb">
+        <div class="card-inner" style="background:${p.hc}">
+          <span style="font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:${dark?'rgba(255,255,255,.2)':'rgba(0,0,0,.15)'}">${p.title}</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <div class="card-title">${p.title}</div>
+        <div class="card-sub">${p.sub}</div>
+      </div>`;
+    card.addEventListener('click', () => open_(p, DATA.indexOf(p)));
+    g.appendChild(card);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.add('visible')));
+  });
+  bindH();
+}
+
+/* filter */
+document.querySelectorAll('.fw').forEach(w => {
+  w.addEventListener('click', () => {
+    document.querySelectorAll('.fw').forEach(x=>x.classList.remove('active'));
+    w.classList.add('active');
+    renderCards(w.dataset.f);
+  });
+});
+
+/* open project */
+function open_(p, idx) {
+  const pp = document.getElementById('pp');
+  document.getElementById('pp-name').textContent = p.title;
+  document.getElementById('pp-sub').textContent  = p.sub;
+  document.getElementById('pp-det').textContent  = p.det;
+  document.getElementById('pp-yr').textContent   = p.year;
+  document.getElementById('pp-svc').innerHTML    = p.svc.map(s=>`<span class="ptag">${s}</span>`).join('');
+
+  const dark = parseInt(p.hc.replace('#',''),16) < 0x666666;
+  document.getElementById('pp-hero').innerHTML =
+    `<div class="proj-hero-ph" style="background:${p.hc}">
+       <span style="font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:${dark?'rgba(255,255,255,.25)':'rgba(0,0,0,.2)'}">HERO IMAGE</span>
+     </div>`;
+
+  /* gallery */
+  const side = document.getElementById('pp-side');
+  const imgs = document.getElementById('pp-imgs');
+  side.innerHTML = imgs.innerHTML = '';
+
+  let i=0;
+  while(i < p.ic.length) {
+    if(i%3===0) {
+      const id=`g${p.id}-${i}`;
+      const b=document.createElement('div'); b.id=id;
+      b.innerHTML=`<div class="img-ph" style="background:${p.ic[i]};aspect-ratio:16/9"><span>Image ${i+1}</span></div>`;
+      imgs.appendChild(b);
+      addThumb(side, p.ic[i], id, i===0);
+      i++;
+    } else {
+      const idA=`g${p.id}-${i}`, idB=`g${p.id}-${i+1}`;
+      const cB = p.ic[i+1]||p.ic[i];
+      const row=document.createElement('div'); row.id=idA; row.className='img-row';
+      row.innerHTML=`
+        <div class="img-ph" style="background:${p.ic[i]};aspect-ratio:3/4"><span>Image ${i+1}</span></div>
+        <div class="img-ph" id="${idB}" style="background:${cB};aspect-ratio:3/4"><span>Image ${i+2}</span></div>`;
+      imgs.appendChild(row);
+      const cap=document.createElement('div'); cap.className='img-cap';
+      cap.innerHTML=`<div class="cap-txt">${p.title} — ${p.sub}</div><div class="cap-txt">${p.det.slice(0,90)}…</div>`;
+      imgs.appendChild(cap);
+      addThumb(side, p.ic[i], idA, false);
+      if(p.ic[i+1]) addThumb(side, cB, idB, false);
+      i+=2;
+    }
+  }
+
+  /* credits */
+  document.getElementById('pp-cr').innerHTML = p.cr.map(c=>`<div><div class="cr-role">${c.r}</div><div class="cr-name">${c.n}</div></div>`).join('');
+
+  /* next */
+  const ni=(idx+1)%DATA.length;
+  document.getElementById('next-title').textContent = DATA[ni].title;
+  document.getElementById('next-btn').onclick = ()=>open_(DATA[ni],ni);
+
+  pp.classList.add('open');
+  requestAnimationFrame(()=>{ pp.scrollTop=0; pp.classList.add('visible'); });
+  document.body.style.overflow='hidden';
+
+  pp.onscroll = () => {
+    document.getElementById('pp-nav').classList.toggle('scrolled', pp.scrollTop>10);
+    side.querySelectorAll('.thumb-btn').forEach(btn => {
+      const el=document.getElementById(btn.dataset.t);
+      if(!el) return;
+      const r=el.getBoundingClientRect();
+      if(r.top<160 && r.bottom>0) {
+        side.querySelectorAll('.thumb-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      }
+    });
+  };
+  bindH();
+}
+
+function addThumb(side,color,targetId,isActive) {
+  const btn=document.createElement('div');
+  btn.className='thumb-btn'+(isActive?' active':'');
+  btn.style.background=color;
+  btn.dataset.t=targetId;
+  btn.addEventListener('click', ()=>{
+    document.getElementById(targetId)?.scrollIntoView({behavior:'smooth',block:'start'});
+    side.querySelectorAll('.thumb-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+  side.appendChild(btn);
+}
+
+function close_() {
+  const pp=document.getElementById('pp');
+  pp.classList.remove('visible');
+  setTimeout(()=>{ pp.classList.remove('open'); document.body.style.overflow=''; pp.onscroll=null; }, 350);
+}
+
+/* animate-in */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){e.target.style.animationPlayState='running';io.unobserve(e.target);} });
+},{threshold:.1});
+document.querySelectorAll('.anim').forEach(el=>io.observe(el));
+
+renderCards('all');
+</script>
+</body>
+</html>
