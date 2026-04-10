@@ -23,6 +23,37 @@
       "services": [
         "Переозвучка"
       ]
+    },
+    {
+      "title": "Air Pods Max",
+      "subtitle": "Переозвучка",
+      "year": "2026",
+      "details": "Делал: фул саунд\nЗадача: сделать ресаунд в драйвовом стиле\nРеализация: синтезировал драмку в стиле yeezus, добавил синты, вуши, райзы,\nглитчи",
+      "services": [
+        "Переозвучка"
+      ],
+      "tags": [
+        "resound"
+      ],
+      "credits": [
+        {
+          "role": "Creative Direction",
+          "name": "Mihey Sound"
+        }
+      ],
+      "cover": "/uploads/1775844609671.png",
+      "images": [
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775844535/y4dpqfrqkbhbb7dz7cy2.mov",
+          "caption": ""
+        },
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775844586/wojtnanlzs6yufdhinpq.mov",
+          "caption": ""
+        }
+      ]
     }
   ]
 }
