@@ -275,12 +275,18 @@ let DATA = [];
 /* ── fix 4: fit wordmark to full width ── */
 function fitWordmark(el) {
   if (!el) return;
-  el.style.fontSize = '10px';
-  const maxWidth = el.parentElement.clientWidth - 64;
-  let size = 10;
+  const parent = el.parentElement;
+  const maxWidth = parent.clientWidth - 64;
+  let size = 100;
   el.style.fontSize = size + 'px';
+  el.style.letterSpacing = '-0.04em';
+  el.style.whiteSpace = 'nowrap';
+  while (el.scrollWidth > maxWidth && size > 10) {
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
   while (el.scrollWidth < maxWidth && size < 500) {
-    size++;
+    size += 1;
     el.style.fontSize = size + 'px';
   }
   el.style.fontSize = (size - 1) + 'px';
