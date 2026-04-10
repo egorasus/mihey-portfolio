@@ -1,11 +1,343 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Панель управления — Mihey Sound</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Панель управления — Mihey Sound</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root { --black: #0a0a0a; --white: #fff; --gray: #f5f5f5; --border: #e0e0e0; --red: #e53e3e; --font: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+body { font-family: var(--font); background: var(--gray); color: var(--black); min-height: 100vh; }
+#login { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+.login-box { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 48px; width: 360px; text-align: center; }
+.login-box h1 { font-size: 20px; font-weight: 600; margin-bottom: 8px; }
+.login-box p { font-size: 13px; color: #888; margin-bottom: 32px; }
+.login-box input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; margin-bottom: 12px; font-family: var(--font); }
+.login-box button { width: 100%; padding: 10px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--font); }
+#app { display: none; max-width: 900px; margin: 0 auto; padding: 32px 16px; }
+.app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+.app-header h1 { font-size: 18px; font-weight: 600; }
+.app-header button { padding: 8px 20px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
+.project-item { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; }
+.project-thumb { width: 48px; height: 48px; border-radius: 6px; object-fit: cover; background: #eee; flex-shrink: 0; }
+.project-info { flex: 1; }
+.project-title { font-size: 14px; font-weight: 500; }
+.project-sub { font-size: 12px; color: #888; margin-top: 2px; }
+.project-actions { display: flex; gap: 8px; }
+.btn-edit { padding: 6px 14px; background: none; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; cursor: pointer; font-family: var(--font); }
+.btn-edit:hover { background: var(--gray); }
+.btn-del { padding: 6px 14px; background: none; border: 1px solid #fca5a5; color: var(--red); border-radius: 6px; font-size: 12px; cursor: pointer; font-family: var(--font); }
+#form-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; overflow-y: auto; padding: 32px 16px; }
+.form-box { background: var(--white); border-radius: 12px; max-width: 640px; margin: 0 auto; padding: 32px; }
+.form-box h2 { font-size: 18px; font-weight: 600; margin-bottom: 24px; }
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 11px; font-weight: 500; color: #555; margin-bottom: 6px; letter-spacing: .04em; text-transform: uppercase; }
+.form-group input, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: var(--font); }
+.form-group textarea { height: 100px; resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.tags-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-cb { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; padding: 6px 12px; border: 1px solid var(--border); border-radius: 100px; }
+.tag-cb input { display: none; }
+.tag-cb.checked { background: var(--black); color: var(--white); border-color: var(--black); }
+.img-upload { border: 2px dashed var(--border); border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; }
+.img-upload:hover { border-color: var(--black); }
+.img-upload input { display: none; }
+.img-preview { max-height: 120px; border-radius: 6px; margin-top: 12px; }
+.form-actions { display: flex; gap: 12px; margin-top: 24px; }
+.btn-save { flex: 1; padding: 12px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--font); }
+.btn-cancel { padding: 12px 24px; background: none; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; cursor: pointer; font-family: var(--font); }
+#status { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; background: var(--black); color: var(--white); border-radius: 8px; font-size: 13px; display: none; z-index: 200; }
+.empty { text-align: center; padding: 48px; color: #aaa; font-size: 14px; }
+.credit-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.credit-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: var(--font); }
+.credit-row button { padding: 6px 10px; background: none; border: 1px solid #fca5a5; color: var(--red); border-radius: 6px; cursor: pointer; font-size: 12px; }
+</style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@3.0.0/dist/decap-cms.js"></script>
+
+<div id="login">
+  <div class="login-box">
+    <h1>Mihey Sound</h1>
+    <p>Панель управления сайтом</p>
+    <input type="password" id="pwd-input" placeholder="Пароль" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Войти</button>
+  </div>
+</div>
+
+<div id="app">
+  <div class="app-header">
+    <h1>Проекты</h1>
+    <button onclick="openForm(-1)">+ Добавить проект</button>
+  </div>
+  <div id="projects-list"></div>
+</div>
+
+<div id="form-overlay">
+  <div class="form-box">
+    <h2 id="form-title">Новый проект</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Название</label>
+        <input id="f-title" placeholder="STRATA">
+      </div>
+      <div class="form-group">
+        <label>Подзаголовок</label>
+        <input id="f-subtitle" placeholder="Luxury Eyewear">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Год</label>
+        <input id="f-year" placeholder="2024">
+      </div>
+      <div class="form-group">
+        <label>Услуги (через запятую)</label>
+        <input id="f-services" placeholder="Creative Direction, Motion">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Описание</label>
+      <textarea id="f-details" placeholder="Описание проекта..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Теги</label>
+      <div class="tags-grid" id="tags-grid">
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="creative">Creative Direction</label>
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="graphic">Graphic Identity</label>
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="digital">Digital</label>
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="print">Print</label>
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="strategy">Strategy</label>
+        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="motion">Motion</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Обложка проекта</label>
+      <div class="img-upload" onclick="document.getElementById('cover-input').click()">
+        <input type="file" id="cover-input" accept="image/*" onchange="previewCover(this)">
+        <div id="cover-preview-wrap">
+          <div style="font-size:13px;color:#aaa">Нажмите чтобы загрузить фото</div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Кредиты</label>
+      <div id="credits-list"></div>
+      <button onclick="addCredit('','')" style="margin-top:8px;padding:6px 14px;background:none;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font)">+ Добавить участника</button>
+    </div>
+    <div class="form-actions">
+      <button class="btn-cancel" onclick="closeForm()">Отмена</button>
+      <button class="btn-save" onclick="saveProject()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div id="status"></div>
+
+<script>
+const REPO = 'egorasus/mihey-portfolio';
+const BRANCH = 'main';
+const TOKEN = atob('Z2hwX0dnb25TRjd5cXV2cjRXbE1qUldLQjViN2lscGhTNDU0Y05X');
+const PASSWORD = 'mihey2024';
+
+let projects = [];
+let editIdx = -1;
+let coverBase64 = '';
+let coverPath = '';
+let existingCover = '';
+let projectsSha = '';
+
+function doLogin() {
+  if (document.getElementById('pwd-input').value === PASSWORD) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadProjects();
+  } else {
+    alert('Неверный пароль');
+  }
+}
+
+function toggleTag(label) {
+  const cb = label.querySelector('input');
+  cb.checked = !cb.checked;
+  label.classList.toggle('checked', cb.checked);
+}
+
+async function apiGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
+    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  return r.json();
+}
+
+async function apiPut(path, content, sha) {
+  const body = { message: `Update ${path}`, content: btoa(unescape(encodeURIComponent(content))), branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+async function apiPutBinary(path, base64content) {
+  let sha = null;
+  try { const ex = await apiGet(path); sha = ex.sha; } catch(e) {}
+  const body = { message: `Upload ${path}`, content: base64content, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  return r.json();
+}
+
+async function loadProjects() {
+  showStatus('Загружаем...');
+  try {
+    const data = await apiGet('data/projects.json');
+    projectsSha = data.sha;
+    const json = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    projects = json.projects || [];
+    renderList();
+  } catch(e) { projects = []; renderList(); }
+  hideStatus();
+}
+
+function renderList() {
+  const el = document.getElementById('projects-list');
+  if (!projects.length) { el.innerHTML = '<div class="empty">Нет проектов. Добавьте первый!</div>'; return; }
+  el.innerHTML = projects.map((p, i) => `
+    <div class="project-item">
+      ${p.cover ? `<img class="project-thumb" src="${p.cover}" onerror="this.style.background='#eee';this.style.display='block'">` : '<div class="project-thumb"></div>'}
+      <div class="project-info">
+        <div class="project-title">${p.title || '—'}</div>
+        <div class="project-sub">${p.subtitle || ''} · ${p.year || ''}</div>
+      </div>
+      <div class="project-actions">
+        <button class="btn-edit" onclick="openForm(${i})">Изменить</button>
+        <button class="btn-del" onclick="deleteProject(${i})">Удалить</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openForm(idx) {
+  editIdx = idx;
+  coverBase64 = ''; coverPath = ''; existingCover = '';
+  document.getElementById('form-title').textContent = idx === -1 ? 'Новый проект' : 'Редактировать проект';
+  document.getElementById('f-title').value = '';
+  document.getElementById('f-subtitle').value = '';
+  document.getElementById('f-year').value = '';
+  document.getElementById('f-details').value = '';
+  document.getElementById('f-services').value = '';
+  document.getElementById('cover-preview-wrap').innerHTML = '<div style="font-size:13px;color:#aaa">Нажмите чтобы загрузить фото</div>';
+  document.getElementById('cover-input').value = '';
+  document.querySelectorAll('.tag-cb').forEach(l => { l.querySelector('input').checked = false; l.classList.remove('checked'); });
+  document.getElementById('credits-list').innerHTML = '';
+
+  if (idx !== -1) {
+    const p = projects[idx];
+    document.getElementById('f-title').value = p.title || '';
+    document.getElementById('f-subtitle').value = p.subtitle || '';
+    document.getElementById('f-year').value = p.year || '';
+    document.getElementById('f-details').value = p.details || '';
+    document.getElementById('f-services').value = (p.services || []).join(', ');
+    existingCover = p.cover || '';
+    if (p.cover) document.getElementById('cover-preview-wrap').innerHTML = `<img class="img-preview" src="${p.cover}">`;
+    (p.tags || []).forEach(t => {
+      const l = document.querySelector(`.tag-cb input[value="${t}"]`)?.parentElement;
+      if (l) { l.querySelector('input').checked = true; l.classList.add('checked'); }
+    });
+    (p.credits || []).forEach(c => addCredit(c.role, c.name));
+  } else {
+    addCredit('Creative Direction', 'Mihey Sound');
+  }
+  document.getElementById('form-overlay').style.display = 'block';
+}
+
+function closeForm() { document.getElementById('form-overlay').style.display = 'none'; }
+
+function addCredit(role, name) {
+  const div = document.createElement('div');
+  div.className = 'credit-row';
+  div.innerHTML = `
+    <input placeholder="Роль" value="${role}">
+    <input placeholder="Имя" value="${name}">
+    <button onclick="this.parentElement.remove()">✕</button>
+  `;
+  document.getElementById('credits-list').appendChild(div);
+}
+
+function previewCover(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    coverBase64 = e.target.result.split(',')[1];
+    const ext = file.name.split('.').pop();
+    coverPath = `uploads/${Date.now()}.${ext}`;
+    document.getElementById('cover-preview-wrap').innerHTML = `<img class="img-preview" src="${e.target.result}">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveProject() {
+  const title = document.getElementById('f-title').value.trim();
+  if (!title) { alert('Введите название'); return; }
+  showStatus('Сохраняем...');
+
+  let cover = existingCover;
+  if (coverBase64) {
+    showStatus('Загружаем фото...');
+    await apiPutBinary(coverPath, coverBase64);
+    cover = `/uploads/${coverPath.split('/').pop()}`;
+  }
+
+  const tags = [...document.querySelectorAll('.tag-cb input:checked')].map(cb => cb.value);
+  const services = document.getElementById('f-services').value.split(',').map(s => s.trim()).filter(Boolean);
+  const credits = [...document.getElementById('credits-list').querySelectorAll('.credit-row')].map(div => {
+    const inputs = div.querySelectorAll('input');
+    return { role: inputs[0].value.trim(), name: inputs[1].value.trim() };
+  }).filter(c => c.role);
+
+  const project = {
+    title,
+    subtitle: document.getElementById('f-subtitle').value.trim(),
+    year: document.getElementById('f-year').value.trim(),
+    details: document.getElementById('f-details').value.trim(),
+    services, tags, credits, cover,
+    images: editIdx !== -1 ? (projects[editIdx].images || []) : []
+  };
+
+  if (editIdx === -1) projects.push(project);
+  else projects[editIdx] = project;
+
+  const json = JSON.stringify({ projects }, null, 2);
+  const result = await apiPut('data/projects.json', json, projectsSha);
+  projectsSha = result.content?.sha || projectsSha;
+
+  closeForm();
+  renderList();
+  showStatus('✓ Сохранено! Сайт обновится через ~30 сек.');
+  setTimeout(hideStatus, 4000);
+}
+
+async function deleteProject(i) {
+  if (!confirm(`Удалить "${projects[i].title}"?`)) return;
+  projects.splice(i, 1);
+  showStatus('Удаляем...');
+  const json = JSON.stringify({ projects }, null, 2);
+  const result = await apiPut('data/projects.json', json, projectsSha);
+  projectsSha = result.content?.sha || projectsSha;
+  renderList();
+  showStatus('✓ Удалено!');
+  setTimeout(hideStatus, 2000);
+}
+
+function showStatus(msg) { const el = document.getElementById('status'); el.textContent = msg; el.style.display = 'block'; }
+function hideStatus() { document.getElementById('status').style.display = 'none'; }
+</script>
 </body>
 </html>
