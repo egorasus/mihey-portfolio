@@ -474,6 +474,7 @@ function buildGalleryItem(item, id) {
     video.src = optUrl;
     video.preload = 'metadata';
     video.playsInline = true;
+    video.loop = true;
     if (posterUrl) video.poster = posterUrl;
 
     video.addEventListener('loadedmetadata', () => {
