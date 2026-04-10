@@ -113,12 +113,19 @@ body.hovering #cursor { width: 44px; height: 44px; }
 .thumb-btn { width: 56px; height: 44px; border: 1.5px solid transparent; cursor: pointer; flex-shrink: 0; transition: border-color .2s, opacity .2s; opacity: .4; overflow: hidden; position: relative; }
 .thumb-btn img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .thumb-btn.active, .thumb-btn:hover { opacity: 1; border-color: var(--black); }
-.gal-imgs { padding: 0 32px; display: flex; flex-direction: column; gap: 4px; }
-.img-ph { width: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: rgba(128,128,128,.5); font-weight: 300; background: #f0efeb; }
+.gal-imgs { padding: 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; align-items: start; }
+.img-ph { grid-column: span 2; width: 100%; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: rgba(128,128,128,.5); font-weight: 300; background: #f0efeb; }
 .img-real { width: 100%; display: block; object-fit: cover; }
-.img-row { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-.img-cap { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 12px; padding-bottom: 48px; }
-.cap-txt { font-family: var(--mono); font-size: 11px; color: #999; line-height: 1.5; font-weight: 300; }
+.gal-item { overflow: hidden; min-width: 0; }
+.gal-item-cap { font-size: 12px; color: #888; margin-top: 8px; font-family: var(--mono); line-height: 1.5; }
+/* video player */
+.vid-wrap { position: relative; background: #000; line-height: 0; }
+.vid-wrap video { width: 100%; display: block; }
+.vid-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; background: rgba(0,0,0,.25); }
+.vid-wrap:hover .vid-overlay { opacity: 1; }
+.vid-play { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,.92); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.vid-progress { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,.25); cursor: pointer; }
+.vid-bar { height: 100%; background: #fff; width: 0; pointer-events: none; }
 
 /* credits */
 .credits { display: grid; grid-template-columns: 200px 1fr; gap: 64px; padding: 64px 32px; border-top: .5px solid #eee; }
@@ -269,6 +276,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
 
 <script>
 let DATA = [];
+let TAGS = [];
 
 /* ── fix 4: fit wordmark to full width ── */
 function fitWordmark(el) {
@@ -319,20 +327,19 @@ tick(); setInterval(tick,1000);
 /* ── nav scroll ── */
 window.addEventListener('scroll', () => document.getElementById('main-nav').classList.toggle('scrolled', scrollY>10));
 
-/* ── fix 7: build heading from actual project tags ── */
+/* ── build heading from actual project tags ── */
+function tagLabel(value) {
+  const t = TAGS.find(t => t.value === value);
+  return t ? t.label : value;
+}
 function buildHeading() {
-  const tagMap = {
-    creative:'Creative Direction', graphic:'Graphic Identity',
-    digital:'Digital', print:'Print', strategy:'Strategy', motion:'Motion'
-  };
-  /* collect unique tags from data */
   const usedKeys = [...new Set(DATA.flatMap(p => p.tags))];
   const heading = document.getElementById('works-heading');
   if (!heading) return;
 
   let html = `<span class="fw active" data-f="all">Все,</span>&nbsp;`;
   usedKeys.forEach((key, i) => {
-    const label = tagMap[key] || key;
+    const label = tagLabel(key);
     html += `<span class="fw" data-f="${key}">${label}${i < usedKeys.length-1 ? ',' : ''}</span>`;
     if (i === 1) html += '<br>';
     else html += ' ';
@@ -404,37 +411,17 @@ function open_(p, idx) {
   const allImgs = p.images.length ? p.images : [];
 
   if (allImgs.length === 0) {
-    /* no images yet — show placeholder */
     const ph = document.createElement('div');
-    ph.className = 'img-ph'; ph.style.aspectRatio = '16/9';
-    ph.innerHTML = '<span>Фото появятся после добавления в панели управления</span>';
+    ph.className = 'img-ph'; ph.style.cssText = 'aspect-ratio:16/9;grid-column:span 2';
+    ph.innerHTML = '<span>Медиафайлы появятся после добавления в панели управления</span>';
     imgs.appendChild(ph);
   } else {
-    let i = 0;
-    while(i < allImgs.length) {
-      if(i % 3 === 0) {
-        const id=`g${p.id}-${i}`;
-        const b=document.createElement('div'); b.id=id;
-        b.innerHTML=renderMedia(allImgs[i], 'aspect-ratio:16/9');
-        imgs.appendChild(b);
-        addThumb(side, allImgs[i].url, id, i===0);
-        i++;
-      } else {
-        const idA=`g${p.id}-${i}`, idB=`g${p.id}-${i+1}`;
-        const itemB = allImgs[i+1] || allImgs[i];
-        const row=document.createElement('div'); row.id=idA; row.className='img-row';
-        row.innerHTML=`
-          ${renderMedia(allImgs[i], 'aspect-ratio:3/4')}
-          <div id="${idB}">${renderMedia(itemB, 'aspect-ratio:3/4')}</div>`;
-        imgs.appendChild(row);
-        const cap=document.createElement('div'); cap.className='img-cap';
-        cap.innerHTML=`<div class="cap-txt">${p.title} — ${p.sub}</div><div class="cap-txt">${p.det.slice(0,90)}…</div>`;
-        imgs.appendChild(cap);
-        addThumb(side, allImgs[i].url, idA, false);
-        if(allImgs[i+1]) addThumb(side, itemB.url, idB, false);
-        i+=2;
-      }
-    }
+    allImgs.forEach((item, i) => {
+      const id = `g${p.id}-${i}`;
+      const el = buildGalleryItem(item, id);
+      imgs.appendChild(el);
+      addThumb(side, item, id, i === 0);
+    });
   }
 
   /* credits */
@@ -465,23 +452,111 @@ function open_(p, idx) {
   bindH();
 }
 
-function renderMedia(item, extraStyle) {
-  const style = extraStyle || '';
-  if (item.type === 'video') {
-    return `<video class="img-real" src="${item.url}" style="${style}" controls playsinline preload="metadata"></video>`;
-  }
-  if (item.type === 'audio') {
-    return `<audio class="img-audio" src="${item.url}" controls style="width:100%;margin:12px 0"></audio>`;
-  }
-  return `<img class="img-real" src="${item.url}" style="${style}" loading="lazy">`;
+function clVideoThumb(url) {
+  return url.replace('/video/upload/', '/video/upload/so_0/').replace(/\.(mp4|mov|webm|avi|mkv)(\?.*)?$/, '.jpg');
 }
 
-function addThumb(side, src, targetId, isActive) {
-  const btn=document.createElement('div');
-  btn.className='thumb-btn'+(isActive?' active':'');
-  btn.dataset.t=targetId;
-  btn.innerHTML=`<img src="${src}" loading="lazy">`;
-  btn.addEventListener('click', ()=>{
+function buildGalleryItem(item, id) {
+  const wrap = document.createElement('div');
+  wrap.id = id;
+  wrap.className = 'gal-item';
+
+  if (item.type === 'video') {
+    const optUrl = item.url.includes('cloudinary.com')
+      ? item.url.replace('/video/upload/', '/video/upload/q_auto,f_auto/')
+      : item.url;
+    const posterUrl = item.url.includes('cloudinary.com') ? clVideoThumb(item.url) : '';
+
+    const vidWrap = document.createElement('div');
+    vidWrap.className = 'vid-wrap';
+
+    const video = document.createElement('video');
+    video.src = optUrl;
+    video.preload = 'metadata';
+    video.playsInline = true;
+    if (posterUrl) video.poster = posterUrl;
+
+    video.addEventListener('loadedmetadata', () => {
+      if (video.videoWidth > video.videoHeight * 1.2) wrap.style.gridColumn = 'span 2';
+    });
+
+    const overlay = document.createElement('div');
+    overlay.className = 'vid-overlay';
+
+    const playBtn = document.createElement('button');
+    playBtn.className = 'vid-play';
+    playBtn.innerHTML = '▶';
+    playBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      video.paused ? video.play() : video.pause();
+    });
+    video.addEventListener('play',  () => { playBtn.innerHTML = '❚❚'; });
+    video.addEventListener('pause', () => { playBtn.innerHTML = '▶'; });
+    video.addEventListener('ended', () => { playBtn.innerHTML = '▶'; });
+
+    const progressWrap = document.createElement('div');
+    progressWrap.className = 'vid-progress';
+    const progressBar = document.createElement('div');
+    progressBar.className = 'vid-bar';
+    progressWrap.appendChild(progressBar);
+    progressWrap.addEventListener('click', e => {
+      const rect = progressWrap.getBoundingClientRect();
+      if (video.duration) video.currentTime = ((e.clientX - rect.left) / rect.width) * video.duration;
+    });
+    video.addEventListener('timeupdate', () => {
+      if (video.duration) progressBar.style.width = (video.currentTime / video.duration * 100) + '%';
+    });
+
+    overlay.appendChild(playBtn);
+    overlay.appendChild(progressWrap);
+    vidWrap.appendChild(video);
+    vidWrap.appendChild(overlay);
+    wrap.appendChild(vidWrap);
+
+  } else if (item.type === 'audio') {
+    wrap.style.gridColumn = 'span 2';
+    const audio = document.createElement('audio');
+    audio.src = item.url;
+    audio.controls = true;
+    audio.style.cssText = 'width:100%;margin:12px 0;display:block';
+    wrap.appendChild(audio);
+
+  } else {
+    const img = document.createElement('img');
+    img.src = item.url;
+    img.className = 'img-real';
+    img.loading = 'lazy';
+    img.addEventListener('load', () => {
+      if (img.naturalWidth > img.naturalHeight * 1.2) wrap.style.gridColumn = 'span 2';
+    });
+    wrap.appendChild(img);
+  }
+
+  if (item.caption) {
+    const cap = document.createElement('div');
+    cap.className = 'gal-item-cap';
+    cap.textContent = item.caption;
+    wrap.appendChild(cap);
+  }
+
+  return wrap;
+}
+
+function addThumb(side, item, targetId, isActive) {
+  const btn = document.createElement('div');
+  btn.className = 'thumb-btn' + (isActive ? ' active' : '');
+  btn.dataset.t = targetId;
+
+  if (item.type === 'audio') {
+    btn.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#f0efeb;font-size:18px">🎵</div>';
+  } else {
+    const src = (item.type === 'video' && item.url.includes('cloudinary.com'))
+      ? clVideoThumb(item.url)
+      : item.url;
+    btn.innerHTML = `<img src="${src}" loading="lazy">`;
+  }
+
+  btn.addEventListener('click', () => {
     document.getElementById(targetId)?.scrollIntoView({behavior:'smooth',block:'start'});
     side.querySelectorAll('.thumb-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
@@ -505,6 +580,11 @@ document.querySelectorAll('.anim').forEach(el=>io.observe(el));
 
 /* ── load from CMS ── */
 async function loadAndRender() {
+  try {
+    const tr = await fetch('/data/tags.json');
+    const tj = await tr.json();
+    TAGS = tj.tags || [];
+  } catch(e) {}
   // load settings
   try {
     const sr = await fetch('/data/settings.json');

@@ -518,23 +518,27 @@ function addCredit(role, name) {
 }
 
 const AUDIO_FORMATS = new Set(['mp3','wav','aac','ogg','flac','m4a','opus','wma']);
+let _uploadWidget = null;
 
 function openUploadWidget() {
-  cloudinary.openUploadWidget({
-    cloudName: 'dckjt7i6f',
-    uploadPreset: 'mihey_upload',
-    sources: ['local'],
-    resourceType: 'auto',
-    multiple: true
-  }, (error, result) => {
-    if (error) { console.error(error); return; }
-    if (result && result.event === 'success') {
-      const info = result.info;
-      const fmt = (info.format || '').toLowerCase();
-      let type = info.resource_type === 'image' ? 'image' : AUDIO_FORMATS.has(fmt) ? 'audio' : 'video';
-      addMediaItem({ type, url: info.secure_url, caption: '' });
-    }
-  });
+  if (!_uploadWidget) {
+    _uploadWidget = cloudinary.createUploadWidget({
+      cloudName: 'dckjt7i6f',
+      uploadPreset: 'mihey_upload',
+      sources: ['local'],
+      resourceType: 'auto',
+      multiple: true
+    }, (error, result) => {
+      if (error) { console.error(error); return; }
+      if (result && result.event === 'success') {
+        const info = result.info;
+        const fmt = (info.format || '').toLowerCase();
+        const type = info.resource_type === 'image' ? 'image' : AUDIO_FORMATS.has(fmt) ? 'audio' : 'video';
+        addMediaItem({ type, url: info.secure_url, caption: '' });
+      }
+    });
+  }
+  _uploadWidget.open();
 }
 
 function addMediaItem({ type, url, caption }) {
