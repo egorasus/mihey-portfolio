@@ -1,16 +1,21 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
+<html><head><meta charset="utf-8"></head>
 <body>
 <script>
 const token = new URLSearchParams(window.location.search).get('token');
-const msg = 'authorization:github:success:' + JSON.stringify({token: token, provider: 'github'});
+
 if (window.opener) {
-  window.opener.postMessage(msg, 'https://mihey-portfolio.pages.dev');
-  setTimeout(() => window.close(), 500);
+  // Сначала отправляем handshake
+  window.opener.postMessage('authorizing:github', 'https://mihey-portfolio.pages.dev');
+  
+  // Потом отправляем токен
+  setTimeout(() => {
+    const msg = 'authorization:github:success:' + JSON.stringify({token: token, provider: 'github'});
+    window.opener.postMessage(msg, 'https://mihey-portfolio.pages.dev');
+    setTimeout(() => window.close(), 500);
+  }, 500);
 } else {
-  document.write('No opener - ' + token);
+  document.write('No opener');
 }
 </script>
-</body>
-</html>
+</body></html>
