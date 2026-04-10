@@ -583,13 +583,13 @@ document.querySelectorAll('.anim').forEach(el=>io.observe(el));
 /* ── load from CMS ── */
 async function loadAndRender() {
   try {
-    const tr = await fetch('/data/tags.json');
+    const tr = await fetch('/data/tags.json?v=' + Date.now());
     const tj = await tr.json();
     TAGS = tj.tags || [];
   } catch(e) {}
   // load settings
   try {
-    const sr = await fetch('/data/settings.json');
+    const sr = await fetch('/data/settings.json?v=' + Date.now());
     const s = await sr.json();
     const cl = document.querySelector('.nav-links a[href="#"]:last-child');
     if (cl && s.contact_label) cl.textContent = s.contact_label;
@@ -608,7 +608,7 @@ async function loadAndRender() {
   try {
     const base = '';
     window.BASE = base;
-    const r = await fetch(base + '/data/projects.json');
+    const r = await fetch(base + '/data/projects.json?v=' + Date.now());
     const json = await r.json();
     DATA = (json.projects || []).map((p, i) => ({
       id: i+1,
