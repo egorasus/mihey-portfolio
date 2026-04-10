@@ -140,7 +140,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
 /* proj footer */
 .proj-footer { border-top: .5px solid #eee; padding: 48px 32px 0; }
 .pf-meta { display: grid; grid-template-columns: 1fr auto auto; gap: 64px; align-items: start; padding-bottom: 48px; }
-.footer-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #aaa; cursor: pointer; margin-top: 8px; background: none; border: none; font-family: var(--font); transition: color .2s; padding: 0; }
+.footer-back { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #aaa; cursor: pointer; margin-top: 8px; background: none; border: none; font-family: var(--font); transition: color .2s; padding: 0; text-decoration: none; }
 .footer-back:hover { color: var(--black); }
 .pf-wm { font-weight: 700; letter-spacing: -.04em; color: #eaeaea; line-height: 1; padding-bottom: 8px; user-select: none; white-space: nowrap; display: block; font-size: 120px; }
 
@@ -253,7 +253,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
     <div class="pf-meta">
       <div>
         <div class="footer-copy">©2024 Mihey Sound</div>
-        <button class="footer-back" onclick="closePage()">← Назад</button>
+        <a class="footer-back" href="/">← Назад</a>
       </div>
       <div class="fcol">
         <div class="fcol-label">Follow</div>
