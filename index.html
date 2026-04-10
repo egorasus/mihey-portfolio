@@ -276,48 +276,7 @@ body.hovering #cursor { width: 36px; height: 36px; }
 </div>
 
 <script>
-const DATA = [
-  { id:1, title:'STRATA', sub:'Luxury Eyewear', tags:['creative','strategy'], year:'2023',
-    det:'A lifestyle brand offering elevated essentials for the music-inspired individuals as well as a premium apparel and accessories manufacturing program for select clientele.',
-    svc:['Production','Creative Strategy'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Photographer',n:'Stew Caldo'},{r:'Videographer',n:'Brett Blackwell'}],
-    hc:'#111', ic:['#1a1a1a','#2a2a3a','#1c2a1c','#222','#1a1c2a','#181818'] },
-  { id:2, title:'Neutra VDL', sub:'Brand Identity', tags:['graphic','print'], year:'2023',
-    det:'Complete brand identity system for an architectural firm rooted in clean geometric principles.',
-    svc:['Graphic Identity','Print'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Design',n:'Mihey Sound'}],
-    hc:'#e8e6e0', ic:['#dddad2','#e8e5de','#d5d2ca','#ccc9c0','#e0ddd5','#d8d5cc'] },
-  { id:3, title:'Alicia Keys', sub:'Campaign', tags:['creative','digital','motion'], year:'2024',
-    det:'Visual campaign and digital assets for album launch covering social, OOH and editorial.',
-    svc:['Creative Direction','Digital','Motion'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Motion',n:'Mihey Sound'}],
-    hc:'#c0392b', ic:['#b03020','#c0392b','#a52a1e','#d44030','#b82820','#902015'] },
-  { id:4, title:'PHNTM', sub:'Digital Experience', tags:['digital','strategy'], year:'2024',
-    det:'Full digital strategy and web experience for an emerging electronic music collective.',
-    svc:['Digital','Strategy'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Development',n:'Studio X'}],
-    hc:'#f0f0f0', ic:['#e8e8e8','#e0e0e0','#ebebeb','#f0f0f0','#e5e5e5','#ddd'] },
-  { id:5, title:'Goodfight', sub:'E-Commerce', tags:['digital','graphic'], year:'2023',
-    det:'E-commerce redesign and brand refresh for a menswear label.',
-    svc:['Digital','Graphic Identity'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'}],
-    hc:'#f0efeb', ic:['#eee','#e8e8e0','#e0dfd8','#ebe9e2','#e5e3dc','#dddbd4'] },
-  { id:6, title:'Deveaux NY', sub:'Print & Identity', tags:['print','graphic'], year:'2022',
-    det:'Seasonal lookbook design and brand collateral for DEVEAUX NEW YORK.',
-    svc:['Print','Graphic Identity'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Print',n:'Studio Z'}],
-    hc:'#eee', ic:['#e5e5e5','#ddd','#f0f0f0','#e8e8e8','#e0e0e0','#ececec'] },
-  { id:7, title:"Ain't No Mtn", sub:'Motion Graphics', tags:['motion','creative'], year:'2023',
-    det:'Title sequence and motion graphics for a documentary short film.',
-    svc:['Motion','Creative Direction'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Motion Design',n:'Mihey Sound'}],
-    hc:'#1a3a1a', ic:['#1a3a1a','#243a24','#1c321c','#203820','#182e18','#142a14'] },
-  { id:8, title:'Air EDP', sub:'Product Campaign', tags:['creative','print'], year:'2024',
-    det:'Luxury fragrance campaign with editorial photography direction and print collateral.',
-    svc:['Creative Direction','Print'],
-    cr:[{r:'Creative Direction',n:'Mihey Sound'},{r:'Photography',n:'Mihey Sound'}],
-    hc:'#0a0a0a', ic:['#0a0a0a','#121212','#0f0f0f','#0d0d0d','#111','#0e0e0e'] },
-];
+let DATA = [];
 
 /* cursor */
 const cur = document.getElementById('cursor');
