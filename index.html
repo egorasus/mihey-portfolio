@@ -415,23 +415,23 @@ function open_(p, idx) {
       if(i % 3 === 0) {
         const id=`g${p.id}-${i}`;
         const b=document.createElement('div'); b.id=id;
-        b.innerHTML=`<img class="img-real" src="${allImgs[i]}" style="aspect-ratio:16/9" loading="lazy">`;
+        b.innerHTML=renderMedia(allImgs[i], 'aspect-ratio:16/9');
         imgs.appendChild(b);
-        addThumb(side, allImgs[i], id, i===0);
+        addThumb(side, allImgs[i].url, id, i===0);
         i++;
       } else {
         const idA=`g${p.id}-${i}`, idB=`g${p.id}-${i+1}`;
-        const imgB = allImgs[i+1] || allImgs[i];
+        const itemB = allImgs[i+1] || allImgs[i];
         const row=document.createElement('div'); row.id=idA; row.className='img-row';
         row.innerHTML=`
-          <img class="img-real" src="${allImgs[i]}" style="aspect-ratio:3/4" loading="lazy">
-          <img class="img-real" id="${idB}" src="${imgB}" style="aspect-ratio:3/4" loading="lazy">`;
+          ${renderMedia(allImgs[i], 'aspect-ratio:3/4')}
+          <div id="${idB}">${renderMedia(itemB, 'aspect-ratio:3/4')}</div>`;
         imgs.appendChild(row);
         const cap=document.createElement('div'); cap.className='img-cap';
         cap.innerHTML=`<div class="cap-txt">${p.title} — ${p.sub}</div><div class="cap-txt">${p.det.slice(0,90)}…</div>`;
         imgs.appendChild(cap);
-        addThumb(side, allImgs[i], idA, false);
-        if(allImgs[i+1]) addThumb(side, imgB, idB, false);
+        addThumb(side, allImgs[i].url, idA, false);
+        if(allImgs[i+1]) addThumb(side, itemB.url, idB, false);
         i+=2;
       }
     }
@@ -463,6 +463,17 @@ function open_(p, idx) {
     });
   };
   bindH();
+}
+
+function renderMedia(item, extraStyle) {
+  const style = extraStyle || '';
+  if (item.type === 'video') {
+    return `<video class="img-real" src="${item.url}" style="${style}" controls playsinline preload="metadata"></video>`;
+  }
+  if (item.type === 'audio') {
+    return `<audio class="img-audio" src="${item.url}" controls style="width:100%;margin:12px 0"></audio>`;
+  }
+  return `<img class="img-real" src="${item.url}" style="${style}" loading="lazy">`;
 }
 
 function addThumb(side, src, targetId, isActive) {
@@ -527,7 +538,7 @@ async function loadAndRender() {
       svc: p.services || [],
       cr: (p.credits||[]).map(c=>({r:c.role, n:c.name})),
       cover: p.cover || '',
-      images: (p.images||[]).map(img => typeof img === 'string' ? img : img.image || '')
+      images: (p.images||[]).map(img => typeof img === 'string' ? { type: 'image', url: img, caption: '' } : { type: img.type || 'image', url: img.url || img.image || '', caption: img.caption || '' })
     }));
   } catch(e) { DATA = []; }
   buildHeading();
