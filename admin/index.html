@@ -231,6 +231,7 @@ let settingsSha = '';
 
 function doLogin() {
   if (document.getElementById('pwd-input').value === PASSWORD) {
+    localStorage.setItem('admin_auth', 'true');
     document.getElementById('login').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     showStatus('Загружаем...');
@@ -238,6 +239,12 @@ function doLogin() {
   } else {
     alert('Неверный пароль');
   }
+}
+
+if (localStorage.getItem('admin_auth') === 'true') {
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  Promise.all([loadProjects(), loadTags(), loadSettings()]).finally(() => hideStatus());
 }
 
 function switchTab(name, btn) {
