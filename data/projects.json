@@ -1,17 +1,27 @@
 {
   "projects": [
     {
-      "title": "STRATA",
-      "subtitle": "Luxury Eyewear",
-      "year": "2023",
-      "tags": ["creative", "strategy"],
-      "details": "A lifestyle brand offering elevated essentials for the music-inspired individuals as well as a premium apparel and accessories manufacturing program for select clientele.",
-      "cover": "",
-      "services": ["Production", "Creative Strategy"],
+      "details": "Переозвучка видео Apple",
+      "cover": "/uploads/16569bcdd9c6ebb2429ce37abf4752b9.jpg",
+      "subtitle": "Переозвучка",
+      "title": "Apple",
       "images": [],
+      "tags": [
+        "strategy"
+      ],
       "credits": [
-        { "role": "Creative Direction", "name": "Mihey Sound" },
-        { "role": "Photographer", "name": "Stew Caldo" }
+        {
+          "role": "Creative Direction",
+          "name": "Mihey Sound"
+        },
+        {
+          "role": "Client",
+          "name": "Apple"
+        }
+      ],
+      "year": "2026",
+      "services": [
+        "Переозвучка"
       ]
     }
   ]
