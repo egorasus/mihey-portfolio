@@ -630,11 +630,12 @@ async function loadAndRender() {
 
 window.addEventListener('popstate', () => {
   const path = window.location.pathname;
-  if (path === '/') { closePage(); }
+  if (path === '/' || path === '/mihey-portfolio/' || path === '/mihey-portfolio') { closePage(); }
   else {
-    const slug = path.replace('/', '');
+    const slug = path.replace(/^\//, '');
     const p = DATA.find(x => x.title.toLowerCase().replace(/\s+/g, '-') === slug);
     if (p) open_(p, DATA.indexOf(p));
+    else closePage();
   }
 });
 
