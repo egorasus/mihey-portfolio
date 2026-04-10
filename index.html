@@ -493,7 +493,7 @@ document.querySelectorAll('.anim').forEach(el=>io.observe(el));
 /* ── load from CMS ── */
 async function loadAndRender() {
   try {
-    const base = window.location.hostname === 'localhost' ? '' : '/mihey-portfolio';
+    const base = '';
     window.BASE = base;
     const r = await fetch(base + '/data/projects.json');
     const json = await r.json();
