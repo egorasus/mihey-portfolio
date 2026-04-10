@@ -2,8 +2,8 @@ backend:
   name: github
   repo: egorasus/mihey-portfolio
   branch: main
-  base_url: https://miheysound-oauth.egorkurakinwork.workers.dev
-  auth_endpoint: /callback
+  base_url: https://mihey-portfolio.pages.dev
+  auth_endpoint: /oauth/callback
 
 media_folder: uploads
 public_folder: /uploads
