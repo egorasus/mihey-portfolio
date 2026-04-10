@@ -58,8 +58,12 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
 .section-header h2 { font-size: 18px; font-weight: 600; }
 .btn-add { padding: 8px 20px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
 #tag-form-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; overflow-y: auto; padding: 32px 16px; }
-.media-item { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+.media-item { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; cursor: default; }
+.media-item.drag-over { border-color: var(--black); background: #f9f9f9; }
+.media-item.dragging { opacity: .4; }
 .media-item-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.drag-handle { font-size: 18px; color: #ccc; cursor: grab; flex-shrink: 0; user-select: none; padding: 0 4px; line-height: 1; }
+.drag-handle:active { cursor: grabbing; }
 .media-thumb { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
 .media-icon { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 24px; background: var(--gray); border-radius: 6px; flex-shrink: 0; }
 .media-item-info { flex: 1; min-width: 0; }
@@ -552,6 +556,7 @@ function addMediaItem({ type, url, caption }) {
   const list = document.getElementById('media-list');
   const div = document.createElement('div');
   div.className = 'media-item';
+  div.draggable = true;
   div.dataset.type = type;
   div.dataset.url = url;
   const shortUrl = url.replace(/^https?:\/\/[^/]+\//, '').slice(-50);
@@ -560,6 +565,7 @@ function addMediaItem({ type, url, caption }) {
     : type === 'video' ? `<div class="media-icon">🎬</div>` : `<div class="media-icon">🎵</div>`;
   div.innerHTML = `
     <div class="media-item-header">
+      <span class="drag-handle">⠿</span>
       ${preview}
       <div class="media-item-info">
         <div class="media-item-url">${escapeHtml(shortUrl)}</div>
@@ -568,7 +574,40 @@ function addMediaItem({ type, url, caption }) {
       <button type="button" class="media-del" onclick="this.closest('.media-item').remove()">✕</button>
     </div>
     <textarea class="media-caption" placeholder="Описание (caption)" rows="2">${escapeHtml(caption || '')}</textarea>`;
+  bindDragEvents(div);
   list.appendChild(div);
+}
+
+function bindDragEvents(div) {
+  div.addEventListener('dragstart', e => {
+    e.dataTransfer.effectAllowed = 'move';
+    div.classList.add('dragging');
+    document.getElementById('media-list')._dragging = div;
+  });
+  div.addEventListener('dragend', () => {
+    div.classList.remove('dragging');
+    document.querySelectorAll('.media-item').forEach(el => el.classList.remove('drag-over'));
+    document.getElementById('media-list')._dragging = null;
+  });
+  div.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    const dragging = document.getElementById('media-list')._dragging;
+    if (dragging && dragging !== div) div.classList.add('drag-over');
+  });
+  div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
+  div.addEventListener('drop', e => {
+    e.preventDefault();
+    div.classList.remove('drag-over');
+    const list = document.getElementById('media-list');
+    const dragging = list._dragging;
+    if (!dragging || dragging === div) return;
+    const items = [...list.querySelectorAll('.media-item')];
+    const fromIdx = items.indexOf(dragging);
+    const toIdx = items.indexOf(div);
+    if (fromIdx < toIdx) list.insertBefore(dragging, div.nextSibling);
+    else list.insertBefore(dragging, div);
+  });
 }
 
 function previewCover(input) {
