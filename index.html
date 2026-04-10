@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <title>Mihey Sound</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -165,7 +166,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
     <div class="nav-links">
       <a href="#works">Кейсы</a>
       <!-- fix 3: Паки removed -->
-      <a href="#">Связаться</a>
+      <a href="#" class="nav-contact">Связаться</a>
     </div>
   </nav>
 
@@ -213,7 +214,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
     </div>
     <div class="nav-links">
       <a href="/">Кейсы</a>
-      <a href="#">Связаться</a>
+      <a href="#" class="nav-contact">Связаться</a>
     </div>
   </nav>
 
@@ -568,6 +569,7 @@ function addThumb(side, item, targetId, isActive) {
 
 function closePage() {
   history.pushState({}, 'Mihey Sound', '/');
+  window.scrollTo(0, 0);
   document.title = 'Mihey Sound';
   const pp=document.getElementById('pp');
   pp.classList.remove('visible');
@@ -591,7 +593,7 @@ async function loadAndRender() {
   try {
     const sr = await fetch('/data/settings.json?v=' + Date.now());
     const s = await sr.json();
-    const cl = document.querySelector('.nav-links a[href="#"]:last-child');
+    const cl = document.querySelector('.nav-links a.nav-contact');
     if (cl && s.contact_label) cl.textContent = s.contact_label;
     if (cl && s.contact_url) cl.href = s.contact_url;
     const fcols = document.querySelectorAll('.fcol');
