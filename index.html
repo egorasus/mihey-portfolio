@@ -205,11 +205,11 @@ body.hovering #cursor { width: 44px; height: 44px; }
 <div id="pp">
   <!-- fix 2,9: logo returns to main, back arrow button -->
   <nav class="site-nav" id="pp-nav">
-    <button class="nav-logo" onclick="document.getElementById('pp').classList.remove('visible'); setTimeout(()=>{ document.getElementById('pp').classList.remove('open'); document.body.style.overflow=''; }, 350)">Mihey Sound</button>
+    <button class="nav-logo" onclick="closePage(); history.pushState({}, 'Mihey Sound', '/'); document.title='Mihey Sound';">Mihey Sound</button>
     <div class="nav-links">
       <a href="#">Кейсы</a>
       <a href="#">Связаться</a>
-      <button class="nav-back" onclick="document.getElementById('pp').classList.remove('visible'); setTimeout(()=>{ document.getElementById('pp').classList.remove('open'); document.body.style.overflow=''; }, 350)">← Назад</button>
+      <button class="nav-back" onclick="closePage(); history.pushState({}, 'Mihey Sound', '/'); document.title='Mihey Sound';">← Назад</button>
     </div>
   </nav>
 
@@ -276,14 +276,15 @@ let DATA = [];
 /* ── fix 4: fit wordmark to full width ── */
 function fitWordmark(el) {
   if (!el) return;
+  el.style.fontSize = '10px';
+  const maxWidth = el.parentElement.clientWidth - 64;
   let size = 10;
   el.style.fontSize = size + 'px';
-  const maxWidth = el.parentElement.clientWidth;
-  while (el.scrollWidth < maxWidth && size < 1000) {
-    size += 2;
+  while (el.scrollWidth < maxWidth && size < 500) {
+    size++;
     el.style.fontSize = size + 'px';
   }
-  el.style.fontSize = (size - 2) + 'px';
+  el.style.fontSize = (size - 1) + 'px';
 }
 function fitAllWordmarks() {
   fitWordmark(document.getElementById('main-wm'));

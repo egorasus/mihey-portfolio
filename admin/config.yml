@@ -8,6 +8,38 @@ public_folder: /uploads
 locale: ru
 
 collections:
+  - name: nav
+    label: Навигация и контакты
+    files:
+      - label: Настройки
+        name: settings
+        file: data/settings.json
+        fields:
+          - label: 'Ссылка "Связаться"'
+            name: contact_url
+            widget: string
+            default: "#"
+          - label: Instagram
+            name: instagram_url
+            widget: string
+            default: "#"
+          - label: Instagram текст
+            name: instagram_label
+            widget: string
+            default: Instagram
+          - label: LinkedIn
+            name: linkedin_url
+            widget: string
+            default: "#"
+          - label: LinkedIn текст
+            name: linkedin_label
+            widget: string
+            default: LinkedIn
+          - label: Contact email
+            name: contact_email
+            widget: string
+            default: "hello [at] miheysound.com"
+
   - name: tags
     label: Теги
     files:
