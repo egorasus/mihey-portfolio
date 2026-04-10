@@ -193,18 +193,20 @@ body.hovering #cursor { width: 44px; height: 44px; }
       </div>
     </div>
     <!-- fix 4: wordmark scaled by JS to fill width -->
-    <div class="footer-wm" id="main-wm">MIHEY SOUND</div>
+    <a href="/" class="footer-wm" id="main-wm" style="text-decoration:none;color:inherit;display:block;cursor:pointer;">MIHEY SOUND</a>
   </footer>
 </div>
 
 <!-- ═══ PROJECT PAGE ═══ -->
 <div id="pp">
   <nav class="site-nav" id="pp-nav">
-    <a class="nav-logo" href="/mihey-portfolio/" style="text-decoration:none;">Mihey Sound</a>
+    <div style="display:flex;align-items:center;gap:24px;">
+      <a class="nav-logo" href="/mihey-portfolio/" style="text-decoration:none;">Mihey Sound</a>
+      <a href="/mihey-portfolio/" class="nav-back">← Назад</a>
+    </div>
     <div class="nav-links">
       <a href="/mihey-portfolio/">Кейсы</a>
       <a href="#">Связаться</a>
-      <a href="/mihey-portfolio/" style="font-size:14px;color:#888;">← Назад</a>
     </div>
   </nav>
 
@@ -359,7 +361,7 @@ function renderCards(filter) {
     /* fix 8: show cover image if available */
     const coverSrc = p.cover ? (p.cover.startsWith('http') ? p.cover : window.BASE + p.cover) : '';
     const thumbContent = coverSrc
-      ? `<img src="${coverSrc}" alt="${p.title}" loading="lazy">`
+      ? `<img src="${coverSrc}" alt="${p.title}" loading="lazy" onload="(function(i){var r=i.naturalWidth/i.naturalHeight;i.parentElement.style.aspectRatio=r>1.1?'16/9':r<0.85?'3/4':'1/1';})(this)">`
       : `<div class="card-thumb-ph" style="position:absolute;inset:0;background:#111;display:flex;align-items:center;justify-content:center;">
        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:rgba(255,255,255,.2)">${p.title}</span>
      </div>`;
