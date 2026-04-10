@@ -1,8 +1,10 @@
 {
-    "contact_url": "#",
-    "instagram_url": "#",
-    "instagram_label": "Instagram",
-    "linkedin_url": "#",
-    "linkedin_label": "LinkedIn",
-    "contact_email": "hello [at] miheysound.com"
-  }
+  "contact_label": "Связаться",
+  "contact_url": "#",
+  "social1_label": "Instagram",
+  "social1_url": "#",
+  "social2_label": "LinkedIn",
+  "social2_url": "#",
+  "email": "hello [at] miheysound.com",
+  "email_url": "#"
+}

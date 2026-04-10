@@ -51,6 +51,13 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
 .credit-row { display: flex; gap: 8px; margin-bottom: 8px; }
 .credit-row input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: var(--font); }
 .credit-row button { padding: 6px 10px; background: none; border: 1px solid #fca5a5; color: var(--red); border-radius: 6px; cursor: pointer; font-size: 12px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px; flex-wrap: wrap; }
+.tab { padding: 8px 16px; background: none; border: none; font-size: 14px; cursor: pointer; color: #888; font-family: var(--font); border-radius: 6px; }
+.tab.active { background: var(--black); color: var(--white); }
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+.section-header h2 { font-size: 18px; font-weight: 600; }
+.btn-add { padding: 8px 20px; background: var(--black); color: var(--white); border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-family: var(--font); }
+#tag-form-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 100; overflow-y: auto; padding: 32px 16px; }
 </style>
 </head>
 <body>
@@ -65,11 +72,57 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
 </div>
 
 <div id="app">
-  <div class="app-header">
-    <h1>Проекты</h1>
-    <button onclick="openForm(-1)">+ Добавить проект</button>
+  <div class="tabs">
+    <button type="button" class="tab active" onclick="switchTab('projects',this)">Проекты</button>
+    <button type="button" class="tab" onclick="switchTab('tags',this)">Теги</button>
+    <button type="button" class="tab" onclick="switchTab('settings',this)">Настройки</button>
   </div>
-  <div id="projects-list"></div>
+
+  <div id="tab-projects" style="display:block">
+    <div class="section-header">
+      <h2>Проекты</h2>
+      <button type="button" class="btn-add" onclick="openForm(-1)">+ Добавить проект</button>
+    </div>
+    <div id="projects-list"></div>
+  </div>
+
+  <div id="tab-tags" style="display:none">
+    <div class="section-header">
+      <h2>Теги</h2>
+      <button type="button" class="btn-add" onclick="openTagForm(-1)">+ Добавить тег</button>
+    </div>
+    <div id="tags-list"></div>
+  </div>
+
+  <div id="tab-settings" style="display:none">
+    <div class="section-header"><h2>Настройки сайта</h2></div>
+    <div class="settings-card" style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:24px;margin-bottom:16px">
+      <p style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px">Навигация</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Текст кнопки Связаться</label><input id="s-contact-label" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Ссылка кнопки Связаться</label><input id="s-contact-url" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+      </div>
+    </div>
+    <div class="settings-card" style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:24px;margin-bottom:16px">
+      <p style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px">Футер — Follow</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Название ссылки 1</label><input id="s-social1-label" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Ссылка 1</label><input id="s-social1-url" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Название ссылки 2</label><input id="s-social2-label" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Ссылка 2</label><input id="s-social2-url" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+      </div>
+    </div>
+    <div class="settings-card" style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:24px;margin-bottom:16px">
+      <p style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px">Футер — Contact</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Текст контакта</label><input id="s-email" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Ссылка (mailto: или URL)</label><input id="s-email-url" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+      </div>
+    </div>
+    <button type="button" onclick="saveSettings()" style="padding:10px 24px;background:#0a0a0a;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px">Сохранить настройки</button>
+  </div>
 </div>
 
 <div id="form-overlay">
@@ -101,14 +154,7 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
     </div>
     <div class="form-group">
       <label>Теги</label>
-      <div class="tags-grid" id="tags-grid">
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="creative">Creative Direction</label>
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="graphic">Graphic Identity</label>
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="digital">Digital</label>
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="print">Print</label>
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="strategy">Strategy</label>
-        <label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="motion">Motion</label>
-      </div>
+      <div class="tags-grid" id="tags-grid"></div>
     </div>
     <div class="form-group">
       <label>Обложка проекта</label>
@@ -131,6 +177,24 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
   </div>
 </div>
 
+<div id="tag-form-overlay">
+  <div class="form-box">
+    <h2 id="tag-form-title">Новый тег</h2>
+    <div class="form-group">
+      <label>Название</label>
+      <input id="tag-label" placeholder="Отображаемое имя">
+    </div>
+    <div class="form-group">
+      <label>Значение (латиницей)</label>
+      <input id="tag-value" placeholder="slug">
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-cancel" onclick="closeTagForm()">Отмена</button>
+      <button type="button" class="btn-save" onclick="saveTag()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <div id="status"></div>
 
 <script>
@@ -145,15 +209,45 @@ let coverBase64 = '';
 let coverPath = '';
 let existingCover = '';
 let projectsSha = '';
+let tags = [];
+let tagsSha = '';
+let tagEditIdx = -1;
+let settingsSha = '';
 
 function doLogin() {
   if (document.getElementById('pwd-input').value === PASSWORD) {
     document.getElementById('login').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    loadProjects();
+    showStatus('Загружаем...');
+    Promise.all([loadProjects(), loadTags(), loadSettings()]).finally(() => hideStatus());
   } else {
     alert('Неверный пароль');
   }
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['projects', 'tags', 'settings'].forEach(n => {
+    const pane = document.getElementById('tab-' + n);
+    if (pane) pane.style.display = n === name ? 'block' : 'none';
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderProjectTagGrid() {
+  const grid = document.getElementById('tags-grid');
+  if (!grid) return;
+  if (!tags.length) {
+    grid.innerHTML = '<span style="font-size:13px;color:#888">Сначала добавьте теги во вкладке «Теги»</span>';
+    return;
+  }
+  grid.innerHTML = tags.map(t =>
+    `<label class="tag-cb" onclick="toggleTag(this)"><input type="checkbox" value="${escapeHtml(t.value)}">${escapeHtml(t.label)}</label>`
+  ).join('');
 }
 
 function toggleTag(label) {
@@ -194,7 +288,6 @@ async function apiPutBinary(path, base64content) {
 }
 
 async function loadProjects() {
-  showStatus('Загружаем...');
   try {
     const data = await apiGet('data/projects.json');
     projectsSha = data.sha;
@@ -202,7 +295,145 @@ async function loadProjects() {
     projects = json.projects || [];
     renderList();
   } catch(e) { projects = []; renderList(); }
-  hideStatus();
+}
+
+async function loadTags() {
+  try {
+    const data = await apiGet('data/tags.json');
+    tagsSha = data.sha;
+    const json = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    tags = json.tags || [];
+    renderTags();
+    renderProjectTagGrid();
+  } catch(e) {
+    tags = [];
+    tagsSha = '';
+    renderTags();
+    renderProjectTagGrid();
+  }
+}
+
+function renderTags() {
+  const el = document.getElementById('tags-list');
+  if (!el) return;
+  if (!tags.length) {
+    el.innerHTML = '<div class="empty">Нет тегов. Добавьте первый!</div>';
+    return;
+  }
+  el.innerHTML = tags.map((t, i) => `
+    <div class="project-item">
+      <div class="project-info">
+        <div class="project-title">${escapeHtml(t.label || '—')}</div>
+        <div class="project-sub">${escapeHtml(t.value || '')}</div>
+      </div>
+      <div class="project-actions">
+        <button type="button" class="btn-edit" onclick="openTagForm(${i})">Изменить</button>
+        <button type="button" class="btn-del" onclick="deleteTag(${i})">Удалить</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openTagForm(idx) {
+  tagEditIdx = idx;
+  document.getElementById('tag-form-title').textContent = idx === -1 ? 'Новый тег' : 'Редактировать тег';
+  document.getElementById('tag-label').value = '';
+  document.getElementById('tag-value').value = '';
+  if (idx !== -1 && tags[idx]) {
+    document.getElementById('tag-label').value = tags[idx].label || '';
+    document.getElementById('tag-value').value = tags[idx].value || '';
+  }
+  document.getElementById('tag-form-overlay').style.display = 'block';
+}
+
+function closeTagForm() {
+  document.getElementById('tag-form-overlay').style.display = 'none';
+}
+
+async function saveTag() {
+  const label = document.getElementById('tag-label').value.trim();
+  let value = document.getElementById('tag-value').value.trim().replace(/\s+/g, '-').toLowerCase();
+  if (!label || !value) {
+    alert('Заполните название и значение');
+    return;
+  }
+  showStatus('Сохраняем...');
+  const item = { label, value };
+  if (tagEditIdx === -1) tags.push(item);
+  else tags[tagEditIdx] = item;
+  const json = JSON.stringify({ tags }, null, 2);
+  try {
+    const result = await apiPut('data/tags.json', json, tagsSha || undefined);
+    tagsSha = result.content?.sha || tagsSha;
+    closeTagForm();
+    renderTags();
+    renderProjectTagGrid();
+    showStatus('✓ Теги сохранены');
+    setTimeout(hideStatus, 3000);
+  } catch(e) {
+    alert('Ошибка сохранения тегов');
+    hideStatus();
+  }
+}
+
+async function deleteTag(i) {
+  if (!confirm(`Удалить тег "${tags[i].label}"?`)) return;
+  showStatus('Удаляем...');
+  tags.splice(i, 1);
+  const json = JSON.stringify({ tags }, null, 2);
+  try {
+    const result = await apiPut('data/tags.json', json, tagsSha);
+    tagsSha = result.content?.sha || tagsSha;
+    renderTags();
+    renderProjectTagGrid();
+    showStatus('✓ Удалено');
+    setTimeout(hideStatus, 2000);
+  } catch(e) {
+    hideStatus();
+    alert('Ошибка удаления');
+  }
+}
+
+async function loadSettings() {
+  try {
+    const data = await apiGet('data/settings.json');
+    settingsSha = data.sha;
+    const s = JSON.parse(decodeURIComponent(escape(atob(data.content.replace(/\n/g,'')))));
+    document.getElementById('s-contact-label').value = s.contact_label || '';
+    document.getElementById('s-contact-url').value = s.contact_url || '';
+    document.getElementById('s-social1-label').value = s.social1_label || '';
+    document.getElementById('s-social1-url').value = s.social1_url || '';
+    document.getElementById('s-social2-label').value = s.social2_label || '';
+    document.getElementById('s-social2-url').value = s.social2_url || '';
+    document.getElementById('s-email').value = s.email || '';
+    document.getElementById('s-email-url').value = s.email_url || '';
+  } catch(e) {
+    settingsSha = '';
+  }
+}
+
+async function saveSettings() {
+  showStatus('Сохраняем настройки...');
+  const obj = {
+    contact_label: document.getElementById('s-contact-label').value.trim(),
+    contact_url: document.getElementById('s-contact-url').value.trim() || '#',
+    social1_label: document.getElementById('s-social1-label').value.trim(),
+    social1_url: document.getElementById('s-social1-url').value.trim() || '#',
+    social2_label: document.getElementById('s-social2-label').value.trim(),
+    social2_url: document.getElementById('s-social2-url').value.trim() || '#',
+    email: document.getElementById('s-email').value.trim(),
+    email_url: document.getElementById('s-email-url').value.trim() || '#'
+  };
+  const json = JSON.stringify(obj, null, 2);
+  try {
+    const result = await apiPut('data/settings.json', json, settingsSha || undefined);
+    settingsSha = result.content?.sha || settingsSha;
+    showStatus('✓ Настройки сохранены');
+    setTimeout(hideStatus, 3000);
+  } catch(e) {
+    alert('Ошибка сохранения настроек');
+    hideStatus();
+  }
 }
 
 function renderList() {
