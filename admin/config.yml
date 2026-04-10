@@ -8,96 +8,45 @@ public_folder: /uploads
 locale: ru
 
 collections:
-  - name: settings
-    label: Настройки сайта
-    files:
-      - name: main
-        label: Главная страница
-        file: data/settings.json
-        fields:
-          - label: Имя (логотип)
-            name: name
-            widget: string
-            default: Mihey Sound
-
-          - label: Фото на главной
-            name: hero_image
-            widget: image
-            hint: Рекомендуемый размер — вертикальное фото, минимум 1200px высотой
-
-          - label: Теги под именем
-            name: labels
-            widget: list
-            label_singular: Тег
-            fields:
-              - { label: Текст, name: text, widget: string }
-
-          - label: Ссылка Instagram
-            name: instagram
-            widget: string
-            default: https://instagram.com/
-
-          - label: Контактный email
-            name: email
-            widget: string
-            default: hello@miheysound.com
-
   - name: projects
     label: Проекты
     label_singular: Проект
-    folder: data/projects
-    create: true
-    slug: "{{slug}}"
+    file: data/projects.json
     fields:
-      - label: Название
-        name: title
-        widget: string
-
-      - label: Подзаголовок
-        name: subtitle
-        widget: string
-
-      - label: Год
-        name: year
-        widget: string
-
-      - label: Теги (для фильтра)
-        name: tags
-        widget: select
-        multiple: true
-        options:
-          - { label: Creative Direction, value: creative }
-          - { label: Graphic Identity,  value: graphic }
-          - { label: Digital,           value: digital }
-          - { label: Print,             value: print }
-          - { label: Strategy,          value: strategy }
-          - { label: Motion,            value: motion }
-
-      - label: Обложка проекта
-        name: cover
-        widget: image
-
-      - label: Описание
-        name: details
-        widget: text
-
-      - label: Услуги
-        name: services
+      - label: Проекты
+        name: projects
         widget: list
-        field: { label: Услуга, name: service, widget: string }
-
-      - label: Фото проекта
-        name: images
-        widget: list
-        label_singular: Фото
+        label_singular: Проект
         fields:
-          - { label: Изображение, name: image, widget: image }
-          - { label: Подпись (необязательно), name: caption, widget: string, required: false }
-
-      - label: Кредиты
-        name: credits
-        widget: list
-        label_singular: Участник
-        fields:
-          - { label: Роль, name: role, widget: string }
-          - { label: Имя,  name: name, widget: string }
+          - { label: Название,    name: title,    widget: string }
+          - { label: Подзаголовок, name: subtitle, widget: string }
+          - { label: Год,         name: year,     widget: string }
+          - label: Теги
+            name: tags
+            widget: select
+            multiple: true
+            options:
+              - { label: Creative Direction, value: creative }
+              - { label: Graphic Identity,   value: graphic }
+              - { label: Digital,            value: digital }
+              - { label: Print,              value: print }
+              - { label: Strategy,           value: strategy }
+              - { label: Motion,             value: motion }
+          - { label: Описание,    name: details,  widget: text }
+          - { label: Обложка,     name: cover,    widget: image }
+          - label: Услуги
+            name: services
+            widget: list
+            field: { label: Услуга, name: service, widget: string }
+          - label: Фотографии проекта
+            name: images
+            widget: list
+            label_singular: Фото
+            field: { label: Изображение, name: image, widget: image }
+          - label: Кредиты
+            name: credits
+            widget: list
+            label_singular: Участник
+            fields:
+              - { label: Роль, name: role, widget: string }
+              - { label: Имя,  name: name, widget: string }

@@ -1,0 +1,18 @@
+{
+  "projects": [
+    {
+      "title": "STRATA",
+      "subtitle": "Luxury Eyewear",
+      "year": "2023",
+      "tags": ["creative", "strategy"],
+      "details": "A lifestyle brand offering elevated essentials for the music-inspired individuals as well as a premium apparel and accessories manufacturing program for select clientele.",
+      "cover": "",
+      "services": ["Production", "Creative Strategy"],
+      "images": [],
+      "credits": [
+        { "role": "Creative Direction", "name": "Mihey Sound" },
+        { "role": "Photographer", "name": "Stew Caldo" }
+      ]
+    }
+  ]
+}
