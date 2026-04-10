@@ -91,7 +91,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
 .footer-wm { font-weight: 700; letter-spacing: -.04em; color: #eaeaea; line-height: 1; padding-bottom: 8px; user-select: none; white-space: nowrap; display: block; font-size: 120px; }
 
 /* ── PROJECT PAGE ── */
-#pp { display: none; position: fixed; inset: 0; background: var(--white); overflow-y: auto; z-index: 400; opacity: 0; transition: opacity .35s; }
+#pp { display: none; position: fixed; inset: 0; background: var(--white); overflow-y: auto; z-index: 400; opacity: 0; transition: opacity .35s; overscroll-behavior: none; }
 #pp.open { display: block; }
 #pp.visible { opacity: 1; }
 
@@ -203,13 +203,12 @@ body.hovering #cursor { width: 44px; height: 44px; }
 
 <!-- ═══ PROJECT PAGE ═══ -->
 <div id="pp">
-  <!-- fix 2,9: logo returns to main, back arrow button -->
   <nav class="site-nav" id="pp-nav">
-    <button class="nav-logo" onclick="closePage(); history.pushState({}, 'Mihey Sound', '/'); document.title='Mihey Sound';">Mihey Sound</button>
+    <a class="nav-logo" href="/" style="text-decoration:none;">Mihey Sound</a>
     <div class="nav-links">
-      <a href="#">Кейсы</a>
+      <a href="/">Кейсы</a>
       <a href="#">Связаться</a>
-      <button class="nav-back" onclick="closePage(); history.pushState({}, 'Mihey Sound', '/'); document.title='Mihey Sound';">← Назад</button>
+      <a href="/" style="font-size:14px;color:#888;">← Назад</a>
     </div>
   </nav>
 
@@ -376,6 +375,7 @@ function renderCards(filter) {
 
 /* ── open project page ── */
 function open_(p, idx) {
+  document.getElementById('main').style.display = 'none';
   history.pushState({id: p.id}, p.title, '/' + p.title.toLowerCase().replace(/\s+/g, '-'));
   document.title = p.title + ' — Mihey Sound';
   const pp = document.getElementById('pp');
@@ -477,7 +477,7 @@ function closePage() {
   document.title = 'Mihey Sound';
   const pp=document.getElementById('pp');
   pp.classList.remove('visible');
-  setTimeout(()=>{ pp.classList.remove('open'); document.body.style.overflow=''; pp.onscroll=null; }, 350);
+  setTimeout(()=>{ pp.classList.remove('open'); document.getElementById('main').style.display = 'block'; document.body.style.overflow=''; pp.onscroll=null; }, 350);
 }
 
 /* ── animate-in ── */
