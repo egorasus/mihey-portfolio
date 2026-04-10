@@ -492,6 +492,24 @@ document.querySelectorAll('.anim').forEach(el=>io.observe(el));
 
 /* ── load from CMS ── */
 async function loadAndRender() {
+  // load settings
+  try {
+    const sr = await fetch('/data/settings.json');
+    const s = await sr.json();
+    const cl = document.querySelector('.nav-links a[href="#"]:last-child');
+    if (cl && s.contact_label) cl.textContent = s.contact_label;
+    if (cl && s.contact_url) cl.href = s.contact_url;
+    const fcols = document.querySelectorAll('.fcol');
+    if (fcols[0]) {
+      const links = fcols[0].querySelectorAll('a');
+      if (links[0] && s.social1_label) { links[0].textContent = s.social1_label; links[0].href = s.social1_url||'#'; }
+      if (links[1] && s.social2_label) { links[1].textContent = s.social2_label; links[1].href = s.social2_url||'#'; }
+    }
+    if (fcols[1]) {
+      const span = fcols[1].querySelector('span');
+      if (span && s.email) { span.innerHTML = `<a href="${s.email_url||'#'}" style="color:var(--black);text-decoration:none">${s.email}</a>`; }
+    }
+  } catch(e) {}
   try {
     const base = '';
     window.BASE = base;
