@@ -469,10 +469,8 @@ function clVideoThumb(url) {
 
 function buildAudioPlayer(wrap, src) {
   const audio = new Audio(src);
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  let analyser, sourceNode, peaks = [], animId = null;
+  let peaks = [], loaded = false, loading = false;
 
-  // controls row
   const controls = document.createElement('div');
   controls.className = 'aud-controls';
 
@@ -493,100 +491,107 @@ function buildAudioPlayer(wrap, src) {
   wrap.appendChild(controls);
 
   function fmt(s) {
+    if (!isFinite(s)) return '0:00';
     const m = Math.floor(s / 60), sec = Math.floor(s % 60);
     return m + ':' + String(sec).padStart(2, '0');
   }
 
   function drawWaveform(progress) {
-    const W = canvas.offsetWidth, H = canvas.height;
-    canvas.width = W;
+    const W = canvas.offsetWidth || 200, H = 52;
     const dpr = window.devicePixelRatio || 1;
     canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
     const c = canvas.getContext('2d');
     c.scale(dpr, dpr);
     c.clearRect(0, 0, W, H);
-
-    const bars = Math.floor(W / 3);
-    const barW = 2, gap = 1;
-    const cx = W / 2, cy = H / 2;
+    const cy = H / 2;
+    const barW = 2, gap = 1, step = barW + gap;
+    const bars = Math.floor(W / step);
     const played = Math.floor(bars * (progress || 0));
-
     for (let i = 0; i < bars; i++) {
-      const x = i * (barW + gap);
-      const p = peaks.length ? peaks[Math.floor(i / bars * peaks.length)] : 0.3;
+      const x = i * step;
+      const p = peaks.length ? peaks[Math.floor(i / bars * peaks.length)] : 0.15;
       const h = Math.max(3, p * (H - 8));
-      c.fillStyle = i < played ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.2)';
+      c.fillStyle = i < played ? 'rgba(255,255,255,0.88)' : 'rgba(255,255,255,0.18)';
       c.beginPath();
       c.roundRect(x, cy - h / 2, barW, h, 1);
       c.fill();
     }
-
     // progress line
-    const px = (W / bars) * played;
-    c.fillStyle = 'rgba(255,255,255,0.5)';
-    c.fillRect(px, 0, 1, H);
+    if (progress > 0) {
+      c.fillStyle = 'rgba(255,255,255,0.55)';
+      c.fillRect(played * step, 0, 1, H);
+    }
   }
 
-  function animate() {
-    if (!analyser) return;
-    const data = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteTimeDomainData(data);
-    const p = audio.duration ? audio.currentTime / audio.duration : 0;
-    peaks = Array.from(data).map(v => Math.abs(v - 128) / 128);
-    drawWaveform(p);
-    animId = requestAnimationFrame(animate);
+  function drawLoader() {
+    const W = canvas.offsetWidth || 200, H = 52;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.height = H + 'px';
+    const c = canvas.getContext('2d');
+    c.scale(dpr, dpr);
+    c.clearRect(0, 0, W, H);
+    c.fillStyle = 'rgba(255,255,255,0.35)';
+    c.font = '11px monospace';
+    c.fillText('загрузка...', 12, H / 2 + 4);
   }
 
-  // load peaks from decoded audio
-  fetch(src)
-    .then(r => r.arrayBuffer())
-    .then(buf => ctx.decodeAudioData(buf))
-    .then(decoded => {
-      const raw = decoded.getChannelData(0);
-      const step = Math.floor(raw.length / 200);
-      peaks = [];
-      for (let i = 0; i < 200; i++) {
-        let max = 0;
-        for (let j = 0; j < step; j++) max = Math.max(max, Math.abs(raw[i * step + j] || 0));
-        peaks.push(max);
-      }
-      drawWaveform(0);
-    }).catch(() => { peaks = Array.from({length: 200}, () => 0.2 + Math.random() * 0.3); drawWaveform(0); });
+  function loadPeaks(then) {
+    if (loaded) { then(); return; }
+    if (loading) return;
+    loading = true;
+    drawLoader();
+    const actx = new (window.AudioContext || window.webkitAudioContext)();
+    fetch(src)
+      .then(r => r.arrayBuffer())
+      .then(buf => actx.decodeAudioData(buf))
+      .then(decoded => {
+        const raw = decoded.getChannelData(0);
+        const N = 200, step = Math.floor(raw.length / N);
+        peaks = [];
+        for (let i = 0; i < N; i++) {
+          let max = 0;
+          for (let j = 0; j < step; j++) max = Math.max(max, Math.abs(raw[i * step + j] || 0));
+          peaks.push(max);
+        }
+        actx.close();
+        loaded = true;
+        loading = false;
+        then();
+      })
+      .catch(() => {
+        peaks = Array.from({length: 200}, () => 0.15 + Math.random() * 0.35);
+        loaded = true;
+        loading = false;
+        then();
+      });
+  }
 
   playBtn.addEventListener('click', () => {
-    if (ctx.state === 'suspended') ctx.resume();
     if (audio.paused) {
-      if (!sourceNode) {
-        sourceNode = ctx.createMediaElementSource(audio);
-        analyser = ctx.createAnalyser();
-        analyser.fftSize = 256;
-        sourceNode.connect(analyser);
-        analyser.connect(ctx.destination);
-      }
-      audio.play();
-      playBtn.innerHTML = '❚❚';
-      animate();
+      loadPeaks(() => {
+        drawWaveform(audio.duration ? audio.currentTime / audio.duration : 0);
+        audio.play();
+        playBtn.innerHTML = '❚❚';
+      });
     } else {
       audio.pause();
       playBtn.innerHTML = '▶';
-      cancelAnimationFrame(animId);
-      const p = audio.duration ? audio.currentTime / audio.duration : 0;
-      drawWaveform(p);
     }
   });
 
   audio.addEventListener('timeupdate', () => {
     const p = audio.duration ? audio.currentTime / audio.duration : 0;
-    timeEl.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration || 0);
-    if (audio.paused) drawWaveform(p);
+    timeEl.textContent = fmt(audio.currentTime) + ' / ' + fmt(audio.duration);
+    if (loaded) drawWaveform(p);
   });
 
   audio.addEventListener('ended', () => {
     playBtn.innerHTML = '▶';
-    cancelAnimationFrame(animId);
-    drawWaveform(0);
-    timeEl.textContent = '0:00 / ' + fmt(audio.duration || 0);
     audio.currentTime = 0;
+    timeEl.textContent = '0:00 / ' + fmt(audio.duration);
+    drawWaveform(0);
   });
 
   canvas.addEventListener('click', e => {
@@ -595,7 +600,8 @@ function buildAudioPlayer(wrap, src) {
     audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
   });
 
-  setTimeout(() => drawWaveform(0), 100);
+  // draw empty waveform placeholder on init
+  setTimeout(() => drawWaveform(0), 50);
 }
 
 function buildGalleryItem(item, id) {
