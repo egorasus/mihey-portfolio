@@ -200,7 +200,7 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
 <script>
 const REPO = 'egorasus/mihey-portfolio';
 const BRANCH = 'main';
-const TOKEN = atob('Z2hwX0dnb25TRjd5cXV2cjRXbE1qUldLQjViN2lscGhTNDU0Y05X');
+
 const PASSWORD = 'passwordmihey';
 
 let projects = [];
@@ -257,31 +257,27 @@ function toggleTag(label) {
 }
 
 async function apiGet(path) {
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}`, {
-    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+  const r = await fetch(`https://miheysound-oauth.egorkurakinwork.workers.dev/api/github?path=${encodeURIComponent(path)}&ref=${BRANCH}`, {
+    headers: { 'X-Password': PASSWORD }
   });
   return r.json();
 }
 
 async function apiPut(path, content, sha) {
-  const body = { message: `Update ${path}`, content: btoa(unescape(encodeURIComponent(content))), branch: BRANCH };
-  if (sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+  const body = { path, content: btoa(unescape(encodeURIComponent(content))), sha, branch: BRANCH, message: `Update ${path}` };
+  const r = await fetch(`https://miheysound-oauth.egorkurakinwork.workers.dev/api/github`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Password': PASSWORD },
     body: JSON.stringify(body)
   });
   return r.json();
 }
 
-async function apiPutBinary(path, base64content) {
-  let sha = null;
-  try { const ex = await apiGet(path); sha = ex.sha; } catch(e) {}
-  const body = { message: `Upload ${path}`, content: base64content, branch: BRANCH };
-  if (sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: { Authorization: `token ${TOKEN}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+async function apiPutBinary(path, b64) {
+  const body = { path, content: b64, branch: BRANCH, message: `Upload ${path}`, binary: true };
+  const r = await fetch(`https://miheysound-oauth.egorkurakinwork.workers.dev/api/github`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Password': PASSWORD },
     body: JSON.stringify(body)
   });
   return r.json();
