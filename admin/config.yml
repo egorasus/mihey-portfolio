@@ -10,43 +10,43 @@ locale: ru
 collections:
   - name: projects
     label: Проекты
-    label_singular: Проект
-    file: data/projects.json
-    fields:
-      - label: Проекты
+    files:
+      - label: Список проектов
         name: projects
-        widget: list
-        label_singular: Проект
+        file: data/projects.json
         fields:
-          - { label: Название,    name: title,    widget: string }
-          - { label: Подзаголовок, name: subtitle, widget: string }
-          - { label: Год,         name: year,     widget: string }
-          - label: Теги
-            name: tags
-            widget: select
-            multiple: true
-            options:
-              - { label: Creative Direction, value: creative }
-              - { label: Graphic Identity,   value: graphic }
-              - { label: Digital,            value: digital }
-              - { label: Print,              value: print }
-              - { label: Strategy,           value: strategy }
-              - { label: Motion,             value: motion }
-          - { label: Описание,    name: details,  widget: text }
-          - { label: Обложка,     name: cover,    widget: image }
-          - label: Услуги
-            name: services
+          - label: Проекты
+            name: projects
             widget: list
-            field: { label: Услуга, name: service, widget: string }
-          - label: Фотографии проекта
-            name: images
-            widget: list
-            label_singular: Фото
-            field: { label: Изображение, name: image, widget: image }
-          - label: Кредиты
-            name: credits
-            widget: list
-            label_singular: Участник
+            label_singular: Проект
             fields:
-              - { label: Роль, name: role, widget: string }
-              - { label: Имя,  name: name, widget: string }
+              - { label: Название, name: title, widget: string }
+              - { label: Подзаголовок, name: subtitle, widget: string }
+              - { label: Год, name: year, widget: string }
+              - label: Теги
+                name: tags
+                widget: select
+                multiple: true
+                options:
+                  - { label: Creative Direction, value: creative }
+                  - { label: Graphic Identity, value: graphic }
+                  - { label: Digital, value: digital }
+                  - { label: Print, value: print }
+                  - { label: Strategy, value: strategy }
+                  - { label: Motion, value: motion }
+              - { label: Описание, name: details, widget: text }
+              - { label: Обложка, name: cover, widget: image }
+              - label: Услуги
+                name: services
+                widget: list
+                field: { label: Услуга, name: service, widget: string }
+              - label: Фотографии
+                name: images
+                widget: list
+                field: { label: Изображение, name: image, widget: image }
+              - label: Кредиты
+                name: credits
+                widget: list
+                fields:
+                  - { label: Роль, name: role, widget: string }
+                  - { label: Имя, name: name, widget: string }
