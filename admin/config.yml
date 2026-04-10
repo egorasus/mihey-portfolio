@@ -8,6 +8,21 @@ public_folder: /uploads
 locale: ru
 
 collections:
+  - name: tags
+    label: Теги
+    files:
+      - label: Список тегов
+        name: tags
+        file: data/tags.json
+        fields:
+          - label: Теги
+            name: tags
+            widget: list
+            label_singular: Тег
+            fields:
+              - { label: Название, name: label, widget: string }
+              - { label: Значение (латиницей), name: value, widget: string }
+
   - name: projects
     label: Проекты
     files:
@@ -25,15 +40,8 @@ collections:
               - { label: Год, name: year, widget: string }
               - label: Теги
                 name: tags
-                widget: select
-                multiple: true
-                options:
-                  - { label: Creative Direction, value: creative }
-                  - { label: Graphic Identity, value: graphic }
-                  - { label: Digital, value: digital }
-                  - { label: Print, value: print }
-                  - { label: Strategy, value: strategy }
-                  - { label: Motion, value: motion }
+                widget: list
+                field: { label: Тег, name: tag, widget: string }
               - { label: Описание, name: details, widget: text }
               - { label: Обложка, name: cover, widget: image }
               - label: Услуги
