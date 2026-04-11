@@ -208,6 +208,103 @@ body.hovering #cursor { width: 44px; height: 44px; }
     .site-footer, .proj-footer { overflow: hidden; }
   }
 
+  
+  @media (max-width: 768px) {
+
+    /* 1. Убрать "← Назад" из nav */
+    .nav-back-btn { display: none !important; }
+
+    /* 2. Блок метаданных проекта — всё в одну колонку */
+    .proj-meta {
+      display: block !important;
+      padding: 32px 20px !important;
+    }
+    .proj-meta > div:last-child {
+      margin-top: 28px;
+    }
+    .proj-name { font-size: clamp(28px, 8vw, 48px) !important; }
+
+    /* SERVICES + YEAR — в одну строку рядом */
+    .proj-meta > div:last-child {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 24px;
+    }
+    /* DETAILS тянется на всю ширину */
+    .pdl:first-child { grid-column: 1 / -1; }
+    .pdt { grid-column: 1 / -1; font-size: 13px !important; line-height: 1.6 !important; }
+    /* SERVICES label и теги — первая колонка */
+    .ptags { flex-direction: column; gap: 6px; }
+    /* YEAR — вторая колонка */
+
+    /* 3. Галерея — скрыть боковые миниатюры */
+    .gal-side { display: none !important; }
+
+    /* 4. Галерея — на всю ширину */
+    .gal-wrap {
+      display: block !important;
+      padding: 24px 0 !important;
+    }
+    .gal-imgs {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+      padding: 0 16px !important;
+    }
+    .gal-item { width: 100% !important; }
+    .gal-item[style*="grid-column: span 2"] { grid-column: unset !important; }
+
+    /* Аудио-плеер — во всю ширину */
+    .aud-wrap {
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 5. Credits — в одну колонку */
+    .credits {
+      display: block !important;
+      padding: 40px 20px !important;
+    }
+    .cr-label { margin-bottom: 24px; }
+    .cr-grid { flex-direction: column; gap: 20px !important; }
+    .cr-role {
+      white-space: nowrap !important;
+      overflow: visible !important;
+      display: block !important;
+    }
+
+    /* 6. Next project блок */
+    .next-wrap { padding: 24px 20px; }
+
+  }
+
+  
+/* Fullscreen button on video */
+.vid-fs-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,.5);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity .2s;
+  line-height: 1;
+}
+.vid-wrap:hover .vid-fs-btn { opacity: 1; }
+@media (max-width: 768px) {
+  .vid-fs-btn { opacity: 1 !important; }
+}
+
   </style>
 </head>
 <body>
@@ -266,7 +363,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
   <nav class="site-nav" id="pp-nav">
     <div style="display:flex;align-items:center;gap:24px;">
       <a class="nav-logo" href="/" style="text-decoration:none;">Mihey Sound</a>
-      <a href="/" class="nav-back" onclick="closePage(); return false;">← Назад</a>
+      <a href="/" class="nav-back nav-back-btn" onclick="closePage(); return false;">← Назад</a>
     </div>
     <div class="nav-links">
       <a href="/">Кейсы</a>
@@ -707,8 +804,25 @@ function buildGalleryItem(item, id) {
 
     overlay.appendChild(playBtn);
     overlay.appendChild(progressWrap);
+    // Fullscreen button
+    const fsBtn = document.createElement('button');
+    fsBtn.className = 'vid-fs-btn';
+    fsBtn.innerHTML = '⛶';
+    fsBtn.title = 'На весь экран';
+    fsBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        (vidWrap.requestFullscreen || vidWrap.webkitRequestFullscreen ||
+         video.requestFullscreen || video.webkitRequestFullscreen).call(
+          vidWrap.requestFullscreen ? vidWrap : video
+        );
+      }
+    });
     vidWrap.appendChild(video);
     vidWrap.appendChild(overlay);
+    vidWrap.appendChild(fsBtn);
     wrap.appendChild(vidWrap);
 
   } else if (item.type === 'audio') {
