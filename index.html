@@ -648,6 +648,7 @@ function buildAudioPlayer(wrap, src) {
   controls.appendChild(canvas);
   controls.appendChild(timeEl);
   wrap.appendChild(controls);
+  wrap._audio = audio;    // сохраняем ссылку на audio для stopAllMedia()
 
   function fmt(s) {
     if (!isFinite(s)) return '0:00';
@@ -888,11 +889,13 @@ function addThumb(side, item, targetId, isActive) {
 }
 
 function stopAllMedia() {
-  document.querySelectorAll('#pp video, #pp audio').forEach(m => {
-    m.pause();
-    m.currentTime = 0;
+  // Видео в DOM — находим напрямую
+  document.querySelectorAll('#pp video').forEach(m => { m.pause(); m.currentTime = 0; });
+  // Аудио — не в DOM, ссылка хранится на .aud-wrap._audio
+  document.querySelectorAll('#pp .aud-wrap').forEach(w => {
+    if (w._audio) { w._audio.pause(); w._audio.currentTime = 0; }
   });
-  // Сбрасываем кнопки play у аудио-плееров
+  // Сбрасываем кнопки play
   document.querySelectorAll('#pp .aud-play').forEach(btn => btn.innerHTML = '▶');
   document.querySelectorAll('#pp .vid-play').forEach(btn => btn.innerHTML = '▶');
 }
