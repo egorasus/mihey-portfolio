@@ -823,13 +823,15 @@ function buildGalleryItem(item, id) {
     fsBtn.title = 'На весь экран';
     fsBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (document.fullscreenElement) {
+      // iOS Safari требует webkitEnterFullscreen именно на <video>
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      } else if (document.fullscreenElement) {
         document.exitFullscreen();
-      } else {
-        (vidWrap.requestFullscreen || vidWrap.webkitRequestFullscreen ||
-         video.requestFullscreen || video.webkitRequestFullscreen).call(
-          vidWrap.requestFullscreen ? vidWrap : video
-        );
+      } else if (vidWrap.requestFullscreen) {
+        vidWrap.requestFullscreen();
+      } else if (vidWrap.webkitRequestFullscreen) {
+        vidWrap.webkitRequestFullscreen();
       }
     });
     vidWrap.appendChild(video);
