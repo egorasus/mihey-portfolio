@@ -781,7 +781,6 @@ function buildGalleryItem(item, id) {
     video.preload = 'metadata';
     video.playsInline = true;
     video.loop = true;
-    video.muted = true;
     if (posterUrl) video.poster = posterUrl;
 
     video.addEventListener('loadedmetadata', () => {
@@ -911,18 +910,21 @@ async function loadAndRender() {
   try {
     const sr = await fetch('/data/settings.json?v=' + Date.now());
     const s = await sr.json();
+    // Хелпер: добавляем https:// если нет протокола
+    function fixUrl(u) { return u && !u.match(/^https?:\/\//) ? 'https://' + u : u; }
+
     // Обновляем contact-кнопку во всех навах
     document.querySelectorAll('.nav-links a.nav-contact').forEach(cl => {
       if (s.contact_label) cl.textContent = s.contact_label;
-      if (s.contact_url) cl.href = s.contact_url;
+      if (s.contact_url) cl.href = fixUrl(s.contact_url);
     });
     // Обновляем все fcol (main footer + proj footer)
     document.querySelectorAll('.site-footer .fcol, .proj-footer .fcol').forEach(col => {
       const label = col.querySelector('.fcol-label')?.textContent.toUpperCase() || '';
       if (label.includes('FOLLOW')) {
         const links = col.querySelectorAll('a');
-        if (links[0] && s.social1_label) { links[0].textContent = s.social1_label; links[0].href = s.social1_url||'#'; }
-        if (links[1] && s.social2_label) { links[1].textContent = s.social2_label; links[1].href = s.social2_url||'#'; }
+        if (links[0] && s.social1_label) { links[0].textContent = s.social1_label; links[0].href = fixUrl(s.social1_url)||'#'; }
+        if (links[1] && s.social2_label) { links[1].textContent = s.social2_label; links[1].href = fixUrl(s.social2_url)||'#'; }
       }
       if (label.includes('CONTACT')) {
         const span = col.querySelector('span');
