@@ -211,12 +211,15 @@ body.hovering #cursor { width: 44px; height: 44px; }
       display: block !important;
     }
 
-    /* Wordmark — убираем overflow чтобы не обрезался, JS сам подберёт размер */
+    /* Wordmark — фиксируем ширину чтобы не тянул страницу */
+    html, body { max-width: 100vw; overflow-x: hidden; }
     .footer-wm, .pf-wm {
       display: block !important;
-      overflow: visible !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
       white-space: nowrap !important;
     }
+    .site-footer, .proj-footer { overflow: hidden; }
   }
 
   </style>
