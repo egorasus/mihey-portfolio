@@ -145,21 +145,21 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
     <div class="form-row">
       <div class="form-group">
         <label>Название</label>
-        <input id="f-title" placeholder="STRATA">
+        <input id="f-title" placeholder="">
       </div>
       <div class="form-group">
         <label>Подзаголовок</label>
-        <input id="f-subtitle" placeholder="Luxury Eyewear">
+        <input id="f-subtitle" placeholder="">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Год</label>
-        <input id="f-year" placeholder="2024">
+        <input id="f-year" placeholder="">
       </div>
       <div class="form-group">
         <label>Услуги (через запятую)</label>
-        <input id="f-services" placeholder="Creative Direction, Motion">
+        <input id="f-services" placeholder="">
       </div>
     </div>
     <div class="form-group">
@@ -510,7 +510,7 @@ function openForm(idx) {
       addMediaItem(item);
     });
   } else {
-    addCredit('Creative Direction', 'Mihey Sound');
+    addCredit('', '');
   }
   document.getElementById('form-overlay').style.display = 'block';
 }
@@ -521,8 +521,8 @@ function addCredit(role, name) {
   const div = document.createElement('div');
   div.className = 'credit-row';
   div.innerHTML = `
-    <input placeholder="Роль" value="${role}">
-    <input placeholder="Имя" value="${name}">
+    <input placeholder="" value="${role}">
+    <input placeholder="" value="${name}">
     <button onclick="this.parentElement.remove()">✕</button>
   `;
   document.getElementById('credits-list').appendChild(div);
