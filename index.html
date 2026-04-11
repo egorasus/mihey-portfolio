@@ -211,6 +211,9 @@ body.hovering #cursor { width: 44px; height: 44px; }
   
   @media (max-width: 768px) {
 
+    /* 0. Hero проекта — не заезжает под фиксированный хедер */
+    #pp-hero { margin-top: 60px; }
+
     /* 1. Убрать "← Назад" из nav */
     .nav-back-btn { display: none !important; }
 
@@ -224,18 +227,28 @@ body.hovering #cursor { width: 44px; height: 44px; }
     }
     .proj-name { font-size: clamp(28px, 8vw, 48px) !important; }
 
-    /* SERVICES + YEAR — в одну строку рядом */
+    /* Details/Services/Year — правильная сетка */
     .proj-meta > div:last-child {
       display: grid;
       grid-template-columns: 1fr 1fr;
       column-gap: 24px;
+      row-gap: 0;
     }
-    /* DETAILS тянется на всю ширину */
-    .pdl:first-child { grid-column: 1 / -1; }
-    .pdt { grid-column: 1 / -1; font-size: 13px !important; line-height: 1.6 !important; }
-    /* SERVICES label и теги — первая колонка */
-    .ptags { flex-direction: column; gap: 6px; }
-    /* YEAR — вторая колонка */
+    /* Details label + текст — на всю ширину */
+    .proj-meta > div:last-child .pdl:nth-child(1) { grid-column: 1/-1; }
+    .proj-meta > div:last-child .pdt {
+      grid-column: 1/-1;
+      font-size: 13px !important;
+      line-height: 1.7 !important;
+      font-family: var(--font) !important;
+      letter-spacing: normal !important;
+    }
+    /* Services — левая колонка */
+    .proj-meta > div:last-child .pdl:nth-child(3) { grid-column: 1; margin-top: 24px; }
+    .proj-meta > div:last-child .ptags { grid-column: 1; flex-direction: column; gap: 6px; }
+    /* Year — правая колонка */
+    .proj-meta > div:last-child .pdl:nth-child(5) { grid-column: 2; margin-top: 24px; }
+    .proj-meta > div:last-child .pyr { grid-column: 2; }
 
     /* 3. Галерея — скрыть боковые миниатюры */
     .gal-side { display: none !important; }
@@ -898,19 +911,24 @@ async function loadAndRender() {
   try {
     const sr = await fetch('/data/settings.json?v=' + Date.now());
     const s = await sr.json();
-    const cl = document.querySelector('.nav-links a.nav-contact');
-    if (cl && s.contact_label) cl.textContent = s.contact_label;
-    if (cl && s.contact_url) cl.href = s.contact_url;
-    const fcols = document.querySelectorAll('.fcol');
-    if (fcols[0]) {
-      const links = fcols[0].querySelectorAll('a');
-      if (links[0] && s.social1_label) { links[0].textContent = s.social1_label; links[0].href = s.social1_url||'#'; }
-      if (links[1] && s.social2_label) { links[1].textContent = s.social2_label; links[1].href = s.social2_url||'#'; }
-    }
-    if (fcols[1]) {
-      const span = fcols[1].querySelector('span');
-      if (span && s.email) { span.innerHTML = `<a href="${s.email_url||'#'}" style="color:var(--black);text-decoration:none">${s.email}</a>`; }
-    }
+    // Обновляем contact-кнопку во всех навах
+    document.querySelectorAll('.nav-links a.nav-contact').forEach(cl => {
+      if (s.contact_label) cl.textContent = s.contact_label;
+      if (s.contact_url) cl.href = s.contact_url;
+    });
+    // Обновляем все fcol (main footer + proj footer)
+    document.querySelectorAll('.site-footer .fcol, .proj-footer .fcol').forEach(col => {
+      const label = col.querySelector('.fcol-label')?.textContent.toUpperCase() || '';
+      if (label.includes('FOLLOW')) {
+        const links = col.querySelectorAll('a');
+        if (links[0] && s.social1_label) { links[0].textContent = s.social1_label; links[0].href = s.social1_url||'#'; }
+        if (links[1] && s.social2_label) { links[1].textContent = s.social2_label; links[1].href = s.social2_url||'#'; }
+      }
+      if (label.includes('CONTACT')) {
+        const span = col.querySelector('span');
+        if (span && s.email) { span.innerHTML = `<a href="${s.email_url||'#'}" style="color:var(--black);text-decoration:none">${s.email}</a>`; }
+      }
+    });
   } catch(e) {}
   try {
     const base = '';
