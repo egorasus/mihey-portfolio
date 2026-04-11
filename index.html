@@ -556,6 +556,7 @@ function renderCards(filter) {
 
 /* ── open project page ── */
 function open_(p, idx) {
+  stopAllMedia();
   document.getElementById('main').style.display = 'none';
   history.pushState({id: p.id}, p.title, '/' + p.title.toLowerCase().replace(/\s+/g, '-'));
   document.title = p.title + ' — Mihey Sound';
@@ -886,7 +887,18 @@ function addThumb(side, item, targetId, isActive) {
   side.appendChild(btn);
 }
 
+function stopAllMedia() {
+  document.querySelectorAll('#pp video, #pp audio').forEach(m => {
+    m.pause();
+    m.currentTime = 0;
+  });
+  // Сбрасываем кнопки play у аудио-плееров
+  document.querySelectorAll('#pp .aud-play').forEach(btn => btn.innerHTML = '▶');
+  document.querySelectorAll('#pp .vid-play').forEach(btn => btn.innerHTML = '▶');
+}
+
 function closePage() {
+  stopAllMedia();
   history.pushState({}, 'Mihey Sound', '/');
   window.scrollTo(0, 0);
   document.title = 'Mihey Sound';
