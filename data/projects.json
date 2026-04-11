@@ -44,10 +44,23 @@
       "services": [
         "Дроп каловых масс"
       ],
-      "tags": [],
-      "credits": [],
-      "cover": "",
-      "images": []
+      "tags": [
+        "uslugi"
+      ],
+      "credits": [
+        {
+          "role": "Создатель",
+          "name": "Егор Куракин"
+        }
+      ],
+      "cover": "/uploads/1775938885820.png",
+      "images": [
+        {
+          "type": "audio",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775938924/rd4azhn6h0jlphtqdhtx.mp3",
+          "caption": "пасхалка"
+        }
+      ]
     }
   ]
 }
