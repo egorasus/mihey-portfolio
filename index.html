@@ -210,6 +210,13 @@ body.hovering #cursor { width: 44px; height: 44px; }
       overflow: hidden !important;
       display: block !important;
     }
+
+    /* Wordmark — убираем overflow чтобы не обрезался, JS сам подберёт размер */
+    .footer-wm, .pf-wm {
+      display: block !important;
+      overflow: visible !important;
+      white-space: nowrap !important;
+    }
   }
 
   </style>
