@@ -228,28 +228,41 @@ body.hovering #cursor { width: 44px; height: 44px; }
     }
     .proj-name { font-size: clamp(28px, 8vw, 48px) !important; }
 
-    /* Details/Services/Year — правильная сетка */
-    .proj-meta > div:last-child {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 24px;
-      row-gap: 0;
+    /* Services + Year на мобилке — через явные контейнеры */
+    .proj-svc-year {
+      display: flex;
+      gap: 40px;
+      margin-top: 32px;
+      align-items: flex-start;
     }
-    /* Details label + текст — на всю ширину */
-    .proj-meta > div:last-child .pdl:nth-child(1) { grid-column: 1/-1; }
-    .proj-meta > div:last-child .pdt {
-      grid-column: 1/-1;
-      font-size: 13px !important;
-      line-height: 1.7 !important;
+    .proj-svc-col { flex: 1; }
+    .proj-year-col { flex: 0 0 auto; min-width: 60px; }
+    .proj-svc-year .pdl { margin-top: 0; margin-bottom: 8px; }
+
+    /* Единые отступы для меток и их контента */
+    .proj-meta .pdl {
+      margin-bottom: 8px;
+      margin-top: 0;
+    }
+    .proj-meta .pdt {
+      margin-bottom: 0;
+    }
+    .proj-meta > div:last-child > .pdl:first-child {
+      margin-bottom: 8px;
+    }
+    .proj-meta > div:last-child > .pdt {
       font-family: var(--font) !important;
+      font-size: 14px !important;
+      line-height: 1.65 !important;
       letter-spacing: normal !important;
+      color: #333;
     }
-    /* Services — левая колонка */
-    .proj-meta > div:last-child .pdl:nth-child(3) { grid-column: 1; margin-top: 24px; }
-    .proj-meta > div:last-child .ptags { grid-column: 1; flex-direction: column; gap: 6px; }
-    /* Year — правая колонка */
-    .proj-meta > div:last-child .pdl:nth-child(5) { grid-column: 2; margin-top: 24px; }
-    .proj-meta > div:last-child .pyr { grid-column: 2; }
+
+    /* Pill-тег: паддинг одинаковый со всех сторон */
+    .ptag {
+      padding: 7px 16px !important;
+      font-size: 12px !important;
+    }
 
     /* 3. Галерея — скрыть боковые миниатюры */
     .gal-side { display: none !important; }
