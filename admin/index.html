@@ -579,27 +579,28 @@ function addMediaItem({ type, url, caption }) {
 }
 
 function bindDragEvents(div) {
+  const list = document.getElementById('media-list');
+
+  // ── Desktop drag & drop ──
   div.addEventListener('dragstart', e => {
     e.dataTransfer.effectAllowed = 'move';
     div.classList.add('dragging');
-    document.getElementById('media-list')._dragging = div;
+    list._dragging = div;
   });
   div.addEventListener('dragend', () => {
     div.classList.remove('dragging');
-    document.querySelectorAll('.media-item').forEach(el => el.classList.remove('drag-over'));
-    document.getElementById('media-list')._dragging = null;
+    list.querySelectorAll('.media-item').forEach(el => el.classList.remove('drag-over'));
+    list._dragging = null;
   });
   div.addEventListener('dragover', e => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
-    const dragging = document.getElementById('media-list')._dragging;
-    if (dragging && dragging !== div) div.classList.add('drag-over');
+    if (list._dragging && list._dragging !== div) div.classList.add('drag-over');
   });
   div.addEventListener('dragleave', () => div.classList.remove('drag-over'));
   div.addEventListener('drop', e => {
     e.preventDefault();
     div.classList.remove('drag-over');
-    const list = document.getElementById('media-list');
     const dragging = list._dragging;
     if (!dragging || dragging === div) return;
     const items = [...list.querySelectorAll('.media-item')];
@@ -608,6 +609,79 @@ function bindDragEvents(div) {
     if (fromIdx < toIdx) list.insertBefore(dragging, div.nextSibling);
     else list.insertBefore(dragging, div);
   });
+
+  // ── Mobile touch drag (только по handle) ──
+  const handle = div.querySelector('.drag-handle');
+  if (!handle) return;
+
+  let startY = 0, startX = 0, clone = null, origRect = null;
+
+  handle.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    startY = touch.clientY;
+    startX = touch.clientX;
+    origRect = div.getBoundingClientRect();
+
+    // Создаём визуальный клон
+    clone = div.cloneNode(true);
+    clone.style.cssText = `
+      position: fixed;
+      left: ${origRect.left}px;
+      top: ${origRect.top}px;
+      width: ${origRect.width}px;
+      opacity: 0.85;
+      z-index: 9999;
+      pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      background: #fff;
+      border-radius: 8px;
+      transition: none;
+    `;
+    document.body.appendChild(clone);
+    div.style.opacity = '0.3';
+    list._dragging = div;
+  }, { passive: false });
+
+  handle.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!clone) return;
+    const touch = e.touches[0];
+    const dy = touch.clientY - startY;
+    const dx = touch.clientX - startX;
+    clone.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // Определяем над каким элементом висим
+    clone.style.display = 'none';
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    clone.style.display = '';
+    const target = el?.closest('.media-item');
+
+    list.querySelectorAll('.media-item').forEach(el => el.classList.remove('drag-over'));
+    if (target && target !== div) target.classList.add('drag-over');
+  }, { passive: false });
+
+  handle.addEventListener('touchend', e => {
+    e.preventDefault();
+    if (!clone) return;
+    clone.remove();
+    clone = null;
+    div.style.opacity = '';
+
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const target = el?.closest('.media-item');
+    list.querySelectorAll('.media-item').forEach(el => el.classList.remove('drag-over'));
+
+    if (target && target !== div) {
+      const items = [...list.querySelectorAll('.media-item')];
+      const fromIdx = items.indexOf(div);
+      const toIdx = items.indexOf(target);
+      if (fromIdx < toIdx) list.insertBefore(div, target.nextSibling);
+      else list.insertBefore(div, target);
+    }
+    list._dragging = null;
+  }, { passive: false });
 }
 
 function previewCover(input) {
