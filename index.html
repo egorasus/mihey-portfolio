@@ -750,6 +750,7 @@ function buildAudioPlayer(wrap, src) {
 
   playBtn.addEventListener('click', () => {
     if (audio.paused) {
+      stopOtherMedia(audio);
       loadPeaks(() => {
         drawWaveform(audio.duration ? audio.currentTime / audio.duration : 0);
         audio.play();
@@ -817,7 +818,12 @@ function buildGalleryItem(item, id) {
     playBtn.innerHTML = '▶';
     playBtn.addEventListener('click', e => {
       e.stopPropagation();
-      video.paused ? video.play() : video.pause();
+      if (video.paused) {
+        stopOtherMedia(video);
+        video.play();
+      } else {
+        video.pause();
+      }
     });
     video.addEventListener('play',  () => { playBtn.innerHTML = '❚❚'; });
     video.addEventListener('pause', () => { playBtn.innerHTML = '▶'; });
@@ -906,6 +912,29 @@ function addThumb(side, item, targetId, isActive) {
     btn.classList.add('active');
   });
   side.appendChild(btn);
+}
+
+function stopOtherMedia(current) {
+  // Останавливаем все видео кроме текущего
+  document.querySelectorAll('#pp video').forEach(m => {
+    if (m !== current) { m.pause(); m.currentTime = 0; }
+  });
+  // Останавливаем все аудио кроме текущего
+  document.querySelectorAll('#pp .aud-wrap').forEach(w => {
+    if (w._audio && w._audio !== current) {
+      w._audio.pause();
+      w._audio.currentTime = 0;
+      const btn = w.querySelector('.aud-play');
+      if (btn) btn.innerHTML = '▶';
+    }
+  });
+  // Сбрасываем кнопки play у остановленных видео
+  document.querySelectorAll('#pp video').forEach(m => {
+    if (m !== current && m.paused) {
+      const btn = m.closest('.vid-wrap')?.querySelector('.vid-play');
+      if (btn) btn.innerHTML = '▶';
+    }
+  });
 }
 
 function stopAllMedia() {
