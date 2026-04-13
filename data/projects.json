@@ -66,6 +66,38 @@
       ]
     },
     {
+      "title": "The Act",
+      "subtitle": "Реклама, Ресаунд",
+      "year": "2026",
+      "details": "",
+      "services": [
+        "Музыка",
+        "Саунд дизайн",
+        "Микс/Мастер"
+      ],
+      "tags": [
+        "resound",
+        "adds",
+        "sound-design",
+        "brand-film",
+        "full-audio-production"
+      ],
+      "credits": [
+        {
+          "role": "Creative Direction",
+          "name": "Mihey Sound"
+        }
+      ],
+      "cover": "/uploads/1776042285164.png",
+      "images": [
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776041057/jhhmj0c1d4mohlaqvzt3.mov",
+          "caption": ""
+        }
+      ]
+    },
+    {
       "title": "Air Pods Max",
       "subtitle": "Реклама, Ресаунд",
       "year": "2026",
@@ -96,38 +128,6 @@
         {
           "type": "audio",
           "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775858531/vvpnqmwxlpivyfekdp83.wav",
-          "caption": ""
-        }
-      ]
-    },
-    {
-      "title": "The Act",
-      "subtitle": "Реклама, Ресаунд",
-      "year": "2026",
-      "details": "",
-      "services": [
-        "Музыка",
-        "Саунд дизайн",
-        "Микс/Мастер"
-      ],
-      "tags": [
-        "resound",
-        "adds",
-        "sound-design",
-        "brand-film",
-        "full-audio-production"
-      ],
-      "credits": [
-        {
-          "role": "Creative Direction",
-          "name": "Mihey Sound"
-        }
-      ],
-      "cover": "/uploads/1776042285164.png",
-      "images": [
-        {
-          "type": "video",
-          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776041057/jhhmj0c1d4mohlaqvzt3.mov",
           "caption": ""
         }
       ]
