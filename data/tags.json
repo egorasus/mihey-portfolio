@@ -15,6 +15,10 @@
     {
       "label": "РЕКЛАМА",
       "value": "adds"
+    },
+    {
+      "label": "МИКСИНГ",
+      "value": "mixing"
     }
   ]
 }
