@@ -88,6 +88,44 @@
           "caption": ""
         }
       ]
+    },
+    {
+      "title": "The Social Detox",
+      "subtitle": "Саундтрек",
+      "year": "2025",
+      "details": "",
+      "services": [
+        "Музыка",
+        "Саунд дизайн",
+        "Микс/Мастер"
+      ],
+      "tags": [
+        "sountracks",
+        "mixing"
+      ],
+      "credits": [
+        {
+          "role": "Everyday Production",
+          "name": "Lawrence Anthony Pontillasy"
+        },
+        {
+          "role": "Olya Simbiriakova",
+          "name": ""
+        }
+      ],
+      "cover": "",
+      "images": [
+        {
+          "type": "audio",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776046706/d4rid17sjkjwopt6qnt5.wav",
+          "caption": ""
+        },
+        {
+          "type": "audio",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776046716/phejqxukfeyqjuiqhdlo.wav",
+          "caption": ""
+        }
+      ]
     }
   ]
 }
