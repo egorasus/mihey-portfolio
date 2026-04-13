@@ -81,7 +81,13 @@
       ],
       "credits": [],
       "cover": "/uploads/1776042807981.jpg",
-      "images": []
+      "images": [
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776046539/xrwnhcx6cqvnge2haht0.mov",
+          "caption": ""
+        }
+      ]
     }
   ]
 }
