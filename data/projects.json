@@ -52,7 +52,12 @@
         "sound-design",
         "music-production"
       ],
-      "credits": [],
+      "credits": [
+        {
+          "role": "Creative Direction",
+          "name": "Mihey Sound"
+        }
+      ],
       "cover": "/uploads/1776042285164.png",
       "images": [
         {
