@@ -11,7 +11,9 @@
       "tags": [
         "resound",
         "adds",
-        "mixing"
+        "mixing",
+        "sound-design",
+        "music-production"
       ],
       "credits": [
         {
@@ -24,12 +26,7 @@
         {
           "type": "video",
           "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775844535/y4dpqfrqkbhbb7dz7cy2.mov",
-          "caption": "После"
-        },
-        {
-          "type": "video",
-          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1775844586/wojtnanlzs6yufdhinpq.mov",
-          "caption": "Проект в Ableton"
+          "caption": ""
         },
         {
           "type": "audio",
