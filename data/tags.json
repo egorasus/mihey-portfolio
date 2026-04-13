@@ -19,6 +19,10 @@
     {
       "label": "Миксинг",
       "value": "mixing"
+    },
+    {
+      "label": "Саунд Дизайн",
+      "value": "sound-design"
     }
   ]
 }
