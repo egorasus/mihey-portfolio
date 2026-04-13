@@ -244,6 +244,7 @@ function doLogin() {
     document.getElementById('app').style.display = 'block';
     showStatus('Загружаем...');
     Promise.all([loadProjects(), loadTags(), loadSettings()]).finally(() => hideStatus());
+    setTimeout(initUploadWidget, 500);
   } else {
     alert('Неверный пароль');
   }
@@ -253,6 +254,7 @@ if (localStorage.getItem('admin_auth') === 'true') {
   document.getElementById('login').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   Promise.all([loadProjects(), loadTags(), loadSettings()]).finally(() => hideStatus());
+  setTimeout(initUploadWidget, 500);
 }
 
 function switchTab(name, btn) {
@@ -654,24 +656,27 @@ function addCredit(role, name) {
 const AUDIO_FORMATS = new Set(['mp3','wav','aac','ogg','flac','m4a','opus','wma']);
 let _uploadWidget = null;
 
+function initUploadWidget() {
+  if (_uploadWidget) return;
+  _uploadWidget = cloudinary.createUploadWidget({
+    cloudName: 'dckjt7i6f',
+    uploadPreset: 'mihey_upload',
+    sources: ['local'],
+    resourceType: 'auto',
+    multiple: true
+  }, (error, result) => {
+    if (error) { console.error(error); return; }
+    if (result && result.event === 'success') {
+      const info = result.info;
+      const fmt = (info.format || '').toLowerCase();
+      const type = info.resource_type === 'image' ? 'image' : AUDIO_FORMATS.has(fmt) ? 'audio' : 'video';
+      addMediaItem({ type, url: info.secure_url, caption: '' });
+    }
+  });
+}
+
 function openUploadWidget() {
-  if (!_uploadWidget) {
-    _uploadWidget = cloudinary.createUploadWidget({
-      cloudName: 'dckjt7i6f',
-      uploadPreset: 'mihey_upload',
-      sources: ['local'],
-      resourceType: 'auto',
-      multiple: true
-    }, (error, result) => {
-      if (error) { console.error(error); return; }
-      if (result && result.event === 'success') {
-        const info = result.info;
-        const fmt = (info.format || '').toLowerCase();
-        const type = info.resource_type === 'image' ? 'image' : AUDIO_FORMATS.has(fmt) ? 'audio' : 'video';
-        addMediaItem({ type, url: info.secure_url, caption: '' });
-      }
-    });
-  }
+  if (!_uploadWidget) initUploadWidget();
   _uploadWidget.open();
 }
 
