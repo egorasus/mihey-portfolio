@@ -1,6 +1,41 @@
 {
   "projects": [
     {
+      "title": "New Media Art Musiem",
+      "subtitle": "Имидж видео, Ресаунд",
+      "year": "2026",
+      "details": "",
+      "services": [
+        "Музыка",
+        "Саунд дизайн",
+        "Микс/Мастер"
+      ],
+      "tags": [
+        "resound",
+        "sountracks",
+        "adds",
+        "mixing",
+        "sound-design",
+        "music-production",
+        "brand-film",
+        "full-audio-production"
+      ],
+      "credits": [
+        {
+          "role": "Creative Direction",
+          "name": "Mihey Sound"
+        }
+      ],
+      "cover": "/uploads/1776042807981.jpg",
+      "images": [
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776046539/xrwnhcx6cqvnge2haht0.mov",
+          "caption": ""
+        }
+      ]
+    },
+    {
       "title": "Air Pods Max",
       "subtitle": "Реклама, Ресаунд",
       "year": "2026",
@@ -63,41 +98,6 @@
         {
           "type": "video",
           "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776041057/jhhmj0c1d4mohlaqvzt3.mov",
-          "caption": ""
-        }
-      ]
-    },
-    {
-      "title": "New Media Art Musiem",
-      "subtitle": "Имидж видео, Ресаунд",
-      "year": "2026",
-      "details": "",
-      "services": [
-        "Музыка",
-        "Саунд дизайн",
-        "Микс/Мастер"
-      ],
-      "tags": [
-        "resound",
-        "sountracks",
-        "adds",
-        "mixing",
-        "sound-design",
-        "music-production",
-        "brand-film",
-        "full-audio-production"
-      ],
-      "credits": [
-        {
-          "role": "Creative Direction",
-          "name": "Mihey Sound"
-        }
-      ],
-      "cover": "/uploads/1776042807981.jpg",
-      "images": [
-        {
-          "type": "video",
-          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776046539/xrwnhcx6cqvnge2haht0.mov",
           "caption": ""
         }
       ]
