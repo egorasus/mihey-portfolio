@@ -75,6 +75,10 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
 .proj-drag-handle:active { cursor: grabbing; }
 .project-item.dragging-proj { opacity: .35; }
 .project-item.drag-over-proj { border-color: var(--black); background: #fafafa; }
+.tag-drag-handle { font-size: 18px; color: #ccc; cursor: grab; user-select: none; padding: 0 8px 0 0; flex-shrink: 0; }
+.tag-drag-handle:active { cursor: grabbing; }
+.project-item.dragging-tag { opacity: .35; }
+.project-item.drag-over-tag { border-color: var(--black); background: #fafafa; }
 </style>
 <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 </head>
@@ -342,6 +346,76 @@ async function loadTags() {
   }
 }
 
+function bindTagDrag(div) {
+  const list = document.getElementById('tags-list');
+  div.addEventListener('dragstart', e => { e.dataTransfer.effectAllowed = 'move'; div.classList.add('dragging-tag'); list._draggingTag = div; });
+  div.addEventListener('dragend', () => { div.classList.remove('dragging-tag'); list.querySelectorAll('.project-item').forEach(el => el.classList.remove('drag-over-tag')); list._draggingTag = null; saveTagOrder(); });
+  div.addEventListener('dragover', e => { e.preventDefault(); if (list._draggingTag && list._draggingTag !== div) div.classList.add('drag-over-tag'); });
+  div.addEventListener('dragleave', () => div.classList.remove('drag-over-tag'));
+  div.addEventListener('drop', e => {
+    e.preventDefault(); div.classList.remove('drag-over-tag');
+    const dragging = list._draggingTag; if (!dragging || dragging === div) return;
+    const items = [...list.querySelectorAll('.project-item')];
+    const fromIdx = items.indexOf(dragging), toIdx = items.indexOf(div);
+    if (fromIdx < toIdx) list.insertBefore(dragging, div.nextSibling); else list.insertBefore(dragging, div);
+  });
+  const handle = div.querySelector('.tag-drag-handle');
+  if (!handle) return;
+  let clone = null, startY = 0, startX = 0;
+  handle.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const touch = e.touches[0]; startY = touch.clientY; startX = touch.clientX;
+    const rect = div.getBoundingClientRect();
+    clone = div.cloneNode(true);
+    clone.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;opacity:.85;z-index:9999;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.18);background:#fff;border-radius:10px;`;
+    document.body.appendChild(clone); div.style.opacity = '.3'; list._draggingTag = div;
+  }, { passive: false });
+  handle.addEventListener('touchmove', e => {
+    e.preventDefault(); if (!clone) return;
+    const touch = e.touches[0];
+    clone.style.transform = `translate(${touch.clientX - startX}px,${touch.clientY - startY}px)`;
+    clone.style.display = 'none';
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    clone.style.display = '';
+    const target = el?.closest('.project-item');
+    list.querySelectorAll('.project-item').forEach(el => el.classList.remove('drag-over-tag'));
+    if (target && target !== div) target.classList.add('drag-over-tag');
+  }, { passive: false });
+  handle.addEventListener('touchend', e => {
+    e.preventDefault(); if (!clone) return;
+    clone.remove(); clone = null; div.style.opacity = '';
+    const touch = e.changedTouches[0];
+    const el = document.elementFromPoint(touch.clientX, touch.clientY);
+    const target = el?.closest('.project-item');
+    list.querySelectorAll('.project-item').forEach(el => el.classList.remove('drag-over-tag'));
+    if (target && target !== div) {
+      const items = [...list.querySelectorAll('.project-item')];
+      const fromIdx = items.indexOf(div), toIdx = items.indexOf(target);
+      if (fromIdx < toIdx) list.insertBefore(div, target.nextSibling); else list.insertBefore(div, target);
+    }
+    list._draggingTag = null; saveTagOrder();
+  }, { passive: false });
+}
+
+async function saveTagOrder() {
+  const items = [...document.querySelectorAll('#tags-list .project-item')];
+  const newOrder = items.map(el => tags[parseInt(el.dataset.idx)]).filter(Boolean);
+  tags = newOrder;
+  document.querySelectorAll('#tags-list .project-item').forEach((el, i) => {
+    el.dataset.idx = i;
+    const e = el.querySelector('.btn-edit'), d = el.querySelector('.btn-del');
+    if (e) e.setAttribute('onclick', `openTagForm(${i})`);
+    if (d) d.setAttribute('onclick', `deleteTag(${i})`);
+  });
+  const json = JSON.stringify({ tags }, null, 2);
+  try {
+    showStatus('Сохраняем порядок тегов...');
+    const result = await apiPut('data/tags.json', json, tagsSha);
+    tagsSha = result.content?.sha || tagsSha;
+    showStatus('✓ Порядок тегов сохранён'); setTimeout(hideStatus, 2000);
+  } catch(e) { hideStatus(); }
+}
+
 function renderTags() {
   const el = document.getElementById('tags-list');
   if (!el) return;
@@ -349,8 +423,14 @@ function renderTags() {
     el.innerHTML = '<div class="empty">Нет тегов. Добавьте первый!</div>';
     return;
   }
-  el.innerHTML = tags.map((t, i) => `
-    <div class="project-item">
+  el.innerHTML = '';
+  tags.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'project-item';
+    div.draggable = true;
+    div.dataset.idx = i;
+    div.innerHTML = `
+      <span class="tag-drag-handle" title="Перетащить">⠿</span>
       <div class="project-info">
         <div class="project-title">${escapeHtml(t.label || '—')}</div>
         <div class="project-sub">${escapeHtml(t.value || '')}</div>
@@ -358,9 +438,10 @@ function renderTags() {
       <div class="project-actions">
         <button type="button" class="btn-edit" onclick="openTagForm(${i})">Изменить</button>
         <button type="button" class="btn-del" onclick="deleteTag(${i})">Удалить</button>
-      </div>
-    </div>
-  `).join('');
+      </div>`;
+    bindTagDrag(div);
+    el.appendChild(div);
+  });
 }
 
 function openTagForm(idx) {
