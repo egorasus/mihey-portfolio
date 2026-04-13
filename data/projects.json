@@ -35,6 +35,25 @@
           "caption": ""
         }
       ]
+    },
+    {
+      "title": "The Act",
+      "subtitle": "Ресаунд",
+      "year": "2026",
+      "details": "",
+      "services": [
+        "Музыка",
+        "Саунд дизайн",
+        "Микс/Мастер"
+      ],
+      "tags": [
+        "resound",
+        "adds",
+        "mixing"
+      ],
+      "credits": [],
+      "cover": "",
+      "images": []
     }
   ]
 }
