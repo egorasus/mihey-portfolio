@@ -52,8 +52,14 @@
         "mixing"
       ],
       "credits": [],
-      "cover": "",
-      "images": []
+      "cover": "/uploads/1776041231063.png",
+      "images": [
+        {
+          "type": "video",
+          "url": "https://res.cloudinary.com/dckjt7i6f/video/upload/v1776041057/jhhmj0c1d4mohlaqvzt3.mov",
+          "caption": ""
+        }
+      ]
     }
   ]
 }
