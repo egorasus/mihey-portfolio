@@ -11,6 +11,10 @@
     {
       "label": "САУНДРЕКИ",
       "value": "sountracks"
+    },
+    {
+      "label": "РЕКЛАМА",
+      "value": "adds"
     }
   ]
 }
