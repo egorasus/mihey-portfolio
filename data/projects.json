@@ -153,7 +153,10 @@
         "Саунд дизайн",
         "Микс/Мастер"
       ],
-      "tags": [],
+      "tags": [
+        "brand-film",
+        "full-audio-production"
+      ],
       "credits": [
         {
           "role": "8U Production",
