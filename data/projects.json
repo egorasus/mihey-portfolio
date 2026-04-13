@@ -62,6 +62,26 @@
           "caption": ""
         }
       ]
+    },
+    {
+      "title": "New Media Art Musiem",
+      "subtitle": "Ресаунд",
+      "year": "2026",
+      "details": "",
+      "services": [
+        "Музыка",
+        "Саунд дизайн",
+        "Микс/Мастер"
+      ],
+      "tags": [
+        "resound",
+        "sountracks",
+        "adds",
+        "mixing"
+      ],
+      "credits": [],
+      "cover": "/uploads/1776042807981.jpg",
+      "images": []
     }
   ]
 }
