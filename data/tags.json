@@ -1,12 +1,12 @@
 {
   "tags": [
     {
-      "label": "Ресаунд",
-      "value": "resound"
-    },
-    {
       "label": "Саундтреки",
       "value": "sountracks"
+    },
+    {
+      "label": "Ресаунд",
+      "value": "resound"
     },
     {
       "label": "Реклама",
