@@ -187,6 +187,7 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
       <label>Медиафайлы</label>
       <div id="media-list"></div>
       <button type="button" onclick="openUploadWidget()" style="margin-top:8px;padding:6px 14px;background:none;border:1px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font)">+ Загрузить фото / видео / аудио</button>
+<button type="button" onclick="addYouTubeLink()" style="margin-top:8px;margin-left:8px;padding:6px 14px;background:none;border:1px solid #fca5a5;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--font);color:#e53e3e">+ YouTube ссылка</button>
     </div>
     <div class="form-group">
       <label>Кредиты</label>
@@ -675,6 +676,14 @@ function initUploadWidget() {
   });
 }
 
+function addYouTubeLink() {
+    const url = prompt('Вставьте ссылку на YouTube видео:');
+    if (!url) return;
+    const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+    if (!m) { alert('Не удалось распознать YouTube ссылку. Проверьте формат.'); return; }
+    addMediaItem({ type: 'youtube', url: url.trim(), caption: '' });
+  }
+
 function openUploadWidget() {
   if (!_uploadWidget) initUploadWidget();
   _uploadWidget.open();
@@ -688,8 +697,11 @@ function addMediaItem({ type, url, caption }) {
   div.dataset.type = type;
   div.dataset.url = url;
   const shortUrl = url.replace(/^https?:\/\/[^/]+\//, '').slice(-50);
+  const ytId = type === 'youtube' ? (url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/) || [])[1] : null;
   const preview = type === 'image'
     ? `<img class="media-thumb" src="${escapeHtml(url)}" alt="">`
+    : type === 'youtube' && ytId
+    ? `<img class="media-thumb" src="https://img.youtube.com/vi/${ytId}/mqdefault.jpg" alt="">`
     : type === 'video' ? `<div class="media-icon">🎬</div>` : `<div class="media-icon">🎵</div>`;
   div.innerHTML = `
     <div class="media-item-header">
