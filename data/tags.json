@@ -23,6 +23,10 @@
     {
       "label": "Resound",
       "value": "resound"
+    },
+    {
+      "label": "Full Sound Production",
+      "value": "full-sound-production"
     }
   ]
 }
