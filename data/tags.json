@@ -27,10 +27,6 @@
     {
       "label": "Бренд-фильм",
       "value": "brand-film"
-    },
-    {
-      "label": "Полный цикл аудиопроизводства",
-      "value": "full-audio-production"
     }
   ]
 }
