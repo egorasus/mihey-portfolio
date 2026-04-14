@@ -58,14 +58,14 @@ body.hovering #cursor { width: 44px; height: 44px; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ── WORKS ── */
-#works { padding: 80px 32px 0; }
+#works { padding: 80px 48px 0; }
 .works-h { font-size: clamp(36px,7vw,88px); font-weight: 700; line-height: 1.05; letter-spacing: -.03em; margin-bottom: 64px; }
 /* fix 7: tags generated dynamically */
 .fw { display: inline; color: var(--gray); cursor: pointer; transition: color .2s; user-select: none; }
 .fw:hover, .fw.active { color: var(--black); }
 
 /* ── GRID ── */
-.grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+.grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 32px; }
 @media (max-width: 900px) { .grid { grid-template-columns: repeat(2,1fr); } }
 @media (max-width: 500px)  { .grid { grid-template-columns: 1fr; } }
 .card { cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .5s; }
@@ -76,9 +76,9 @@ body.hovering #cursor { width: 44px; height: 44px; }
 .card:hover .card-thumb img { transform: scale(1.04); }
 .card-thumb-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .5s; }
 .card:hover .card-thumb-ph { transform: scale(1.04); }
-.card-info { margin-top: 12px; }
-.card-title { font-size: 13px; font-weight: 500; }
-.card-sub { font-family: var(--mono); font-size: 11px; color: #888; margin-top: 4px; font-weight: 300; }
+.card-info { margin-top: 14px; }
+.card-title { font-size: 14px; font-weight: 500; }
+.card-sub { font-size: 12px; color: #aaa; margin-top: 5px; font-weight: 400; letter-spacing: .01em; }
 
 /* ── FOOTER (fix 3,4,6) ── */
 .site-footer { margin-top: 120px; border-top: .5px solid #e8e8e8; padding: 48px 32px 0; }
@@ -206,9 +206,9 @@ body.hovering #cursor { width: 44px; height: 44px; }
     .hero-lbl { display: none !important; }
 
     /* 4. Карточки проектов — отступы вдвое меньше */
-    #works { padding-left: 16px; padding-right: 16px; }
-    .grid { gap: 12px; }
-    .card-thumb { aspect-ratio: 16/9; }
+    #works { padding-left: 20px; padding-right: 20px; }
+    .grid { gap: 20px; }
+    .card-thumb { aspect-ratio: 3/4; }
 
     /* 5. Футер главной страницы — 3 колонки как project1804 */
     .site-footer { padding: 36px 20px 0; margin-top: 60px; }
@@ -585,15 +585,16 @@ function renderCards(filter) {
     /* fix 8: show cover image if available */
     const coverSrc = p.cover ? (p.cover.startsWith('http') ? p.cover : window.BASE + p.cover) : '';
     const thumbContent = coverSrc
-      ? `<img src="${coverSrc}" alt="${p.title}" loading="lazy" onload="(function(i){var r=i.naturalWidth/i.naturalHeight;i.parentElement.style.aspectRatio=r>1.1?'16/9':r<0.85?'3/4':'1/1';})(this)">`
+      ? `<img src="${coverSrc}" alt="${p.title}" loading="lazy" >`
       : `<div class="card-thumb-ph" style="position:absolute;inset:0;background:#111;display:flex;align-items:center;justify-content:center;">
        <span style="font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:rgba(255,255,255,.2)">${p.title}</span>
      </div>`;
+    const tagLabels = (p.tags || []).map(t => tagLabel(t)).join(',\u2009');
     card.innerHTML = `
       <div class="card-thumb">${thumbContent}</div>
       <div class="card-info">
         <div class="card-title">${p.title}</div>
-        <div class="card-sub">${p.sub}</div>
+        <div class="card-sub">${tagLabels || p.sub}</div>
       </div>`;
     card.addEventListener('click', () => open_(p, DATA.indexOf(p)));
     g.appendChild(card);
