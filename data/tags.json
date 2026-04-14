@@ -1,3 +1,8 @@
 {
-  "tags": []
+  "tags": [
+    {
+      "label": "Brand Film",
+      "value": "brand-film"
+    }
+  ]
 }
