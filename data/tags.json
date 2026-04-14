@@ -15,6 +15,10 @@
     {
       "label": "Beauty / Fashion",
       "value": "beauty-/-fashion"
+    },
+    {
+      "label": "Short Film",
+      "value": "short-film"
     }
   ]
 }
