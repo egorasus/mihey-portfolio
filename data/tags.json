@@ -3,6 +3,10 @@
     {
       "label": "Brand Film",
       "value": "brand-film"
+    },
+    {
+      "label": "Commercial",
+      "value": "commercial"
     }
   ]
 }
