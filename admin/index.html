@@ -149,6 +149,17 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Ярлык «Все теги»</label><input id="s-all-tag-label" placeholder="Все" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
       </div>
     </div>
+    <div class="settings-card" style="background:#fff;border:1px solid #e0e0e0;border-radius:10px;padding:24px;margin-bottom:16px">
+      <p style="font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em;margin-bottom:16px">About — главы</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 1 — заголовок</label><input id="s-about-ch1-title" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 1 — текст</label><textarea id="s-about-ch1-text" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 2 — заголовок</label><input id="s-about-ch2-title" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 2 — текст</label><textarea id="s-about-ch2-text" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 3 — заголовок</label><input id="s-about-ch3-title" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit"></div>
+        <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 3 — текст</label><textarea id="s-about-ch3-text" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
+      </div>
+    </div>
     <button type="button" onclick="saveSettings()" style="padding:10px 24px;background:#0a0a0a;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px">Сохранить настройки</button>
   </div>
 </div>
@@ -524,6 +535,13 @@ async function loadSettings() {
     document.getElementById('s-email').value = s.email || '';
     document.getElementById('s-email-url').value = s.email_url || '';
     document.getElementById('s-all-tag-label').value = s.allTagLabel || 'Все';
+    const ab = s.about || {};
+    document.getElementById('s-about-ch1-title').value = ab.chapter1_title || '';
+    document.getElementById('s-about-ch1-text').value = ab.chapter1_text || '';
+    document.getElementById('s-about-ch2-title').value = ab.chapter2_title || '';
+    document.getElementById('s-about-ch2-text').value = ab.chapter2_text || '';
+    document.getElementById('s-about-ch3-title').value = ab.chapter3_title || '';
+    document.getElementById('s-about-ch3-text').value = ab.chapter3_text || '';
   } catch(e) {
     settingsSha = '';
   }
@@ -540,7 +558,15 @@ async function saveSettings() {
     social2_url: document.getElementById('s-social2-url').value.trim() || '#',
     email: document.getElementById('s-email').value.trim(),
     email_url: document.getElementById('s-email-url').value.trim() || '#',
-    allTagLabel: document.getElementById('s-all-tag-label').value.trim() || 'Все'
+    allTagLabel: document.getElementById('s-all-tag-label').value.trim() || 'Все',
+    about: {
+      chapter1_title: document.getElementById('s-about-ch1-title').value.trim(),
+      chapter1_text:  document.getElementById('s-about-ch1-text').value.trim(),
+      chapter2_title: document.getElementById('s-about-ch2-title').value.trim(),
+      chapter2_text:  document.getElementById('s-about-ch2-text').value.trim(),
+      chapter3_title: document.getElementById('s-about-ch3-title').value.trim(),
+      chapter3_text:  document.getElementById('s-about-ch3-text').value.trim()
+    }
   };
   const json = JSON.stringify(obj, null, 2);
   try {

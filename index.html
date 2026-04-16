@@ -474,25 +474,11 @@ body.hovering #cursor { width: 44px; height: 44px; }
   </section>
 
   <!-- About -->
-  <section class="about-section">
+  <section class="about-section" id="about-section">
     <div class="about-label">About</div>
     <div class="about-body">
-      <div class="about-chapters">
-        <button class="about-chapter-btn active" data-chapter="1">01. О себе</button>
-        <button class="about-chapter-btn" data-chapter="2">02. Подход к работе</button>
-        <button class="about-chapter-btn" data-chapter="3">03. Опыт и сотрудничество</button>
-      </div>
-      <div class="about-texts">
-        <div class="about-chapter-text active" data-chapter="1">
-          Я саунд-дизайнер и композитор, работаю с бренд-фильмами, рекламными кампаниями и короткометражным кино. Моя работа — создание звуковой среды, формирующей атмосферу, ритм и эмоциональное восприятие проекта. Для каждого фильма разрабатываю уникальный звуковой язык, связанный с визуальным стилем и режиссёрской задачей.
-        </div>
-        <div class="about-chapter-text" data-chapter="2">
-          Сопровождаю проекты на всех этапах: от идеи и музыкальной концепции до саунд-дизайна, оригинальной музыки и финального микса. Взаимодействую с режиссёрами, продакшенами и брендами, создавая цельный аудиовизуальный опыт.
-        </div>
-        <div class="about-chapter-text" data-chapter="3">
-          В моём портфолио — бренд-фильмы, рекламные кампании, арт- и культурные проекты, короткометражное кино. Мой бэкграунд объединяет музыкальный продакшн, саунд-дизайн и кинематографическое мышление, что позволяет работать с коммерческими, fashion и авторскими форматами. Открыт к международным коллаборациям.
-        </div>
-      </div>
+      <div class="about-chapters" id="about-chapters"></div>
+      <div class="about-texts" id="about-texts"></div>
     </div>
   </section>
 
@@ -1182,6 +1168,7 @@ async function loadAndRender() {
         if (span && s.email) { span.innerHTML = `<a href="${s.email_url||'#'}" style="color:var(--black);text-decoration:none">${s.email}</a>`; }
       }
     });
+    renderAbout(s);
   } catch(e) {}
   try {
     const base = '';
@@ -1219,16 +1206,33 @@ window.addEventListener('popstate', () => {
 
 loadAndRender();
 
-// About chapters
-document.querySelectorAll('.about-chapter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const ch = btn.dataset.chapter;
-    document.querySelectorAll('.about-chapter-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.about-chapter-text').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelector(`.about-chapter-text[data-chapter="${ch}"]`).classList.add('active');
+// About chapters — из settings
+function renderAbout(s) {
+  const ab = s.about || {};
+  const chapters = [
+    { title: ab.chapter1_title || '01. О себе', text: ab.chapter1_text || '' },
+    { title: ab.chapter2_title || '02. Подход к работе', text: ab.chapter2_text || '' },
+    { title: ab.chapter3_title || '03. Опыт и сотрудничество', text: ab.chapter3_text || '' },
+  ];
+  const btns = document.getElementById('about-chapters');
+  const texts = document.getElementById('about-texts');
+  if (!btns || !texts) return;
+  btns.innerHTML = chapters.map((c, i) =>
+    `<button class="about-chapter-btn${i===0?' active':''}" data-chapter="${i+1}">${c.title}</button>`
+  ).join('');
+  texts.innerHTML = chapters.map((c, i) =>
+    `<div class="about-chapter-text${i===0?' active':''}" data-chapter="${i+1}">${c.text}</div>`
+  ).join('');
+  btns.querySelectorAll('.about-chapter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ch = btn.dataset.chapter;
+      btns.querySelectorAll('.about-chapter-btn').forEach(b => b.classList.remove('active'));
+      texts.querySelectorAll('.about-chapter-text').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      texts.querySelector(`.about-chapter-text[data-chapter="${ch}"]`).classList.add('active');
+    });
   });
-});
+}
 </script>
 </body>
 </html>
