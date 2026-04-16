@@ -65,14 +65,14 @@ body.hovering #cursor { width: 44px; height: 44px; }
 .fw:hover, .fw.active { color: var(--black); }
 
 /* ── GRID ── */
-.grid { columns: 4; column-gap: 32px; }
-@media (max-width: 900px) { .grid { columns: 2; } }
-@media (max-width: 500px)  { .grid { columns: 1; } }
-.card { cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .5s; break-inside: avoid; margin-bottom: 32px; display: block; }
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px)  { .grid { grid-template-columns: 1fr; } }
+.card { cursor: pointer; opacity: 0; transform: translateY(20px); transition: opacity .5s, transform .5s; display: flex; flex-direction: column; aspect-ratio: 3/4; overflow: hidden; }
 .card.visible { opacity: 1; transform: translateY(0); }
-.card-thumb { overflow: hidden; position: relative; background: #f0efeb; }
-/* fix 8: cover image */
-.card-thumb img { width: 100%; height: auto; display: block; transition: transform .5s; }
+.card-thumb { overflow: hidden; position: relative; background: #f0efeb; flex: 1; display: flex; align-items: center; justify-content: center; }
+/* fix 8: contain image */
+.card-thumb img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; transition: transform .5s; background: transparent; }
 .card:hover .card-thumb img { transform: scale(1.04); }
 .card-thumb-ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transition: transform .5s; }
 .card:hover .card-thumb-ph { transform: scale(1.04); }
