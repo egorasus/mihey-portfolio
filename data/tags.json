@@ -5,12 +5,12 @@
       "value": "brand-film"
     },
     {
-      "label": "Commercial",
-      "value": "commercial"
-    },
-    {
       "label": "Art / Culture",
       "value": "art-/-culture"
+    },
+    {
+      "label": "Commercial",
+      "value": "commercial"
     },
     {
       "label": "Beauty / Fashion",
