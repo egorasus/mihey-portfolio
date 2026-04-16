@@ -370,6 +370,58 @@ body.hovering #cursor { width: 44px; height: 44px; }
   .vid-fs-btn { opacity: 1 !important; }
 }
 
+
+    /* ── About block ── */
+    .about-section {
+      padding: 120px 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+    .about-left {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .about-label {
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #999;
+      font-weight: 400;
+    }
+    .about-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: #111;
+      font-weight: 400;
+    }
+    .about-text p {
+      margin: 0 0 18px 0;
+    }
+    .about-text p:last-child {
+      margin-bottom: 0;
+    }
+    .about-image {
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      background: #111;
+      position: sticky;
+      top: 80px;
+    }
+    @media (max-width: 768px) {
+      .about-section {
+        grid-template-columns: 1fr;
+        padding: 80px 20px;
+        gap: 40px;
+      }
+      .about-image {
+        position: static;
+        aspect-ratio: 3 / 2;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -396,6 +448,22 @@ body.hovering #cursor { width: 44px; height: 44px; }
     <div class="hero-lbl music-producer">Direction<span class="star">★</span></div>
     <div class="hero-lbl mix-engineer">Concept<span class="star">★</span></div>
     <div class="hero-lbl artist">Atmosphere<span class="star">★</span></div>
+  </section>
+
+  <!-- About -->
+  <section class="about-section">
+    <div class="about-left">
+      <span class="about-label">About</span>
+      <div class="about-text">
+        <p>Я саунд-дизайнер и композитор. Работаю с бренд-фильмами, рекламными кампаниями и короткометражным кино.</p>
+        <p>Моя работа — создание звуковой среды, формирующей атмосферу, ритм и эмоциональное восприятие проекта. Для каждого фильма разрабатывается собственный звуковой язык, связанный с визуальным стилем и режиссёрской задачей.</p>
+        <p>Сопровождаю проекты на всех этапах работы со звуком: от идеи и музыкальной концепции до саунд-дизайна, оригинальной музыки и финального микса. Сотрудничаю с режиссёрами, продакшенами и брендами, помогая выстраивать цельный аудиовизуальный опыт.</p>
+        <p>Среди проектов — бренд-фильмы, рекламные кампании, проекты в сфере искусства и культуры, а также короткометражные фильмы.</p>
+        <p>Мой бэкграунд объединяет музыкальный продакшн, саунд-дизайн и кинематографическое мышление, что позволяет работать с коммерческими, fashion и авторскими форматами.</p>
+        <p>Открыт к международным коллаборациям.</p>
+      </div>
+    </div>
+    <div class="about-image"></div>
   </section>
 
   <section id="works">
