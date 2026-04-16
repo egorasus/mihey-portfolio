@@ -32,6 +32,8 @@ body { font-family: var(--font); background: var(--white); color: var(--black); 
 }
 body.hovering #cursor { width: 44px; height: 44px; }
 
+html { scroll-behavior: smooth; }
+
 /* ── NAV ── */
 .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 22px 32px; background: rgba(255,255,255,.92); backdrop-filter: blur(10px); border-bottom: .5px solid transparent; transition: border-color .3s; }
 .site-nav.scrolled { border-color: #e0e0e0; }
@@ -457,6 +459,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
     <!-- fix 2: logo goes to top of main page -->
     <a href="#" class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Mihey Sound</a>
     <div class="nav-links">
+      <a href="#about">Обо мне</a>
       <a href="#works">Кейсы</a>
       <!-- fix 3: Паки removed -->
       <a href="#" class="nav-contact">Связаться</a>
@@ -474,7 +477,7 @@ body.hovering #cursor { width: 44px; height: 44px; }
   </section>
 
   <!-- About -->
-  <section class="about-section" id="about-section">
+  <section class="about-section" id="about">
     <div class="about-label">About</div>
     <div class="about-body">
       <div class="about-chapters" id="about-chapters"></div>
