@@ -9,16 +9,16 @@
       "value": "commercial"
     },
     {
+      "label": "Short Film",
+      "value": "short-film"
+    },
+    {
       "label": "Art / Culture",
       "value": "art-/-culture"
     },
     {
       "label": "Beauty / Fashion",
       "value": "beauty-/-fashion"
-    },
-    {
-      "label": "Short Film",
-      "value": "short-film"
     },
     {
       "label": "Spec Project",
