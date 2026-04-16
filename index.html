@@ -616,7 +616,7 @@ function open_(p, idx) {
   const pp = document.getElementById('pp');
   document.getElementById('pp-name').textContent = p.title;
   document.getElementById('pp-sub').textContent  = p.sub;
-  document.getElementById('pp-det').textContent  = p.det;
+  document.getElementById('pp-det').innerHTML = (p.det || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
   document.getElementById('pp-yr').textContent   = p.year;
   document.getElementById('pp-svc').innerHTML    = p.svc.map(s=>`<span class="ptag">${s}</span>`).join('');
 
