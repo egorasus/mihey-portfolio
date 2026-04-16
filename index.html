@@ -564,7 +564,7 @@ function buildHeading() {
   const heading = document.getElementById('works-heading');
   if (!heading) return;
 
-  let html = `<span class="fw active" data-f="all">Все,</span>&nbsp;`;
+  let html = `<span class="fw active" data-f="all">${window.ALL_TAG_LABEL || 'Все'},</span>&nbsp;`;
   usedKeys.forEach((key, i) => {
     const label = tagLabel(key);
     html += `<span class="fw" data-f="${key}">${label}${i < usedKeys.length-1 ? ',' : ''}</span>`;
@@ -1062,6 +1062,7 @@ async function loadAndRender() {
   try {
     const sr = await fetch('/data/settings.json?v=' + Date.now());
     const s = await sr.json();
+    window.ALL_TAG_LABEL = s.allTagLabel || 'Все';
     // Хелпер: добавляем https:// если нет протокола
     function fixUrl(u) { return u && !u.match(/^https?:\/\//) ? 'https://' + u : u; }
 
