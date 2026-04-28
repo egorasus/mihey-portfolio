@@ -469,40 +469,23 @@ html { scroll-behavior: smooth; }
       color: #ccc;
     }
   
+    
+  
     /* ── Nav fix ── */
-    nav {
+    nav.site-nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 40px;
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: #fff;
     }
     .nav-links {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 24px;
-    }
-    .lang-switcher {
       display: flex;
       align-items: center;
-      gap: 4px;
-      font-size: 13px;
+      gap: 24px;
+      position: static;
+      transform: none;
     }
-    .lang-switcher a {
-      color: #999;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .lang-switcher a.active {
-      color: #111;
-    }
-    .lang-switcher .sep {
-      color: #ccc;
+    .lang-switcher {
+      margin-left: 24px;
     }
   </style>
 </head>
