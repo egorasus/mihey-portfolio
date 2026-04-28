@@ -1259,50 +1259,8 @@ function renderAbout(s) {
 }
 
 
-  // ── i18n language switcher ──
-  let LANG = localStorage.getItem('lang') || 'ru';
-
-  function applyLang(settings) {
-    const i = settings.i18n || {};
-    const ab = settings.about || {};
-
-    // Переключатель
-    document.querySelectorAll('#lang-switcher span[data-lang]').forEach(s => {
-      s.classList.toggle('active', s.dataset.lang === LANG);
-    });
-
-    // Хедер nav
-    const navAbout = document.querySelector('a[href="/#about"]');
-    if (navAbout) navAbout.textContent = LANG === 'ru' ? (i.nav_about_ru || 'Обо мне') : (i.nav_about_en || 'About');
-
-    const navCases = document.querySelector('.nav-cases');
-    if (navCases) navCases.textContent = LANG === 'ru' ? (i.nav_cases_ru || 'Кейсы') : (i.nav_cases_en || 'Work');
-
-    const navContact = document.querySelector('.nav-contact');
-    if (navContact) navContact.textContent = LANG === 'ru' ? (i.nav_contact_ru || 'Связаться') : (i.nav_contact_en || 'Contact');
-
-    // About label
-    const aboutLabel = document.querySelector('.about-label');
-    if (aboutLabel) aboutLabel.textContent = LANG === 'ru' ? (i.about_label_ru || 'Обо мне') : (i.about_label_en || 'About');
-
-    // About chapters
-    const chapters = [
-      { title_ru: ab.chapter1_title, title_en: ab.chapter1_title_en, text_ru: ab.chapter1_text, text_en: ab.chapter1_text_en },
-      { title_ru: ab.chapter2_title, title_en: ab.chapter2_title_en, text_ru: ab.chapter2_text, text_en: ab.chapter2_text_en },
-      { title_ru: ab.chapter3_title, title_en: ab.chapter3_title_en, text_ru: ab.chapter3_text, text_en: ab.chapter3_text_en },
-    ];
-    document.querySelectorAll('.about-chapter-btn').forEach((btn, i) => {
-      if (chapters[i]) btn.textContent = LANG === 'ru' ? (chapters[i].title_ru || '') : (chapters[i].title_en || chapters[i].title_ru || '');
-    });
-    document.querySelectorAll('.about-chapter-text').forEach((el, i) => {
-      if (chapters[i]) el.textContent = LANG === 'ru' ? (chapters[i].text_ru || '') : (chapters[i].text_en || chapters[i].text_ru || '');
-    });
-
-    // Футер
-    document.querySelectorAll('.footer-back, [data-i18n="back"]').forEach(el => {
-      el.textContent = LANG === 'ru' ? (i.footer_back_ru || '← Назад') : (i.footer_back_en || '← Back');
-    });
-  }
+  
+  
 
   // Клик на переключатель
   document.getElementById('lang-switcher')?.addEventListener('click', e => {
@@ -1310,11 +1268,39 @@ function renderAbout(s) {
     if (!span) return;
     LANG = span.dataset.lang;
     localStorage.setItem('lang', LANG);
-    applyLang(settings);
     // Перерендерить проекты с новым языком если нужно
     if (typeof renderAbout === 'function') renderAbout(settings);
     applyLang(settings);
   });
+
+  // ── i18n URL-based ──
+  const LANG = window.location.pathname.startsWith('/en') ? 'en' : 'ru';
+  document.getElementById('lang-ru') && document.getElementById('lang-ru').classList.toggle('active', LANG === 'ru');
+  document.getElementById('lang-en') && document.getElementById('lang-en').classList.toggle('active', LANG === 'en');
+
+  function applyLang(settings) {
+    const i = settings.i18n || {};
+    const ab = settings.about || {};
+    const navAbout = document.querySelector('a[href="/#about"]');
+    if (navAbout) navAbout.textContent = LANG === 'ru' ? (i.nav_about_ru || 'Обо мне') : (i.nav_about_en || 'About');
+    const navCases = document.querySelector('.nav-cases');
+    if (navCases) navCases.textContent = LANG === 'ru' ? (i.nav_cases_ru || 'Кейсы') : (i.nav_cases_en || 'Work');
+    const navContact = document.querySelector('.nav-contact');
+    if (navContact) navContact.textContent = LANG === 'ru' ? (i.nav_contact_ru || 'Связаться') : (i.nav_contact_en || 'Contact');
+    const aboutLabel = document.querySelector('.about-label');
+    if (aboutLabel) aboutLabel.textContent = LANG === 'ru' ? (i.about_label_ru || 'Обо мне') : (i.about_label_en || 'About');
+    const chs = [
+      { tr: ab.chapter1_title, te: ab.chapter1_title_en, xr: ab.chapter1_text, xe: ab.chapter1_text_en },
+      { tr: ab.chapter2_title, te: ab.chapter2_title_en, xr: ab.chapter2_text, xe: ab.chapter2_text_en },
+      { tr: ab.chapter3_title, te: ab.chapter3_title_en, xr: ab.chapter3_text, xe: ab.chapter3_text_en },
+    ];
+    document.querySelectorAll('.about-chapter-btn').forEach((btn, idx) => {
+      if (chs[idx]) btn.textContent = LANG === 'ru' ? (chs[idx].tr || '') : (chs[idx].te || chs[idx].tr || '');
+    });
+    document.querySelectorAll('.about-chapter-text').forEach((el, idx) => {
+      if (chs[idx]) el.textContent = LANG === 'ru' ? (chs[idx].xr || '') : (chs[idx].xe || chs[idx].xr || '');
+    });
+  }
 </script>
 </body>
 </html>
