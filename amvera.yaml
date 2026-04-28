@@ -7,5 +7,4 @@ build:
   additionalCommands: null
   artifacts:
     "./*": /
-run:
-  exposedPort: 8080
+run: {}
