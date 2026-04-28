@@ -1,0 +1,13 @@
+---
+meta:
+  environment: nginx
+  toolchain:
+    name: nginx
+    version: 1.25
+
+build:
+  dockerfile: false
+
+run:
+  persistenceMount: /data
+  exposedPort: 80
