@@ -1,13 +1,8 @@
 ---
 meta:
-  environment: static-web
+  environment: static_web
   toolchain:
     name: npm
-    version: 20
-
-build:
-  additionalCommands: ""
-
-artifacts:
-  - key: "./*"
-    value: /
+    version: latest
+build: {}
+run: {}
