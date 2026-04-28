@@ -1,13 +1,13 @@
 ---
 meta:
-  environment: nginx
+  environment: static-web
   toolchain:
-    name: nginx
-    version: 1.25
+    name: npm
+    version: 20
 
 build:
-  dockerfile: false
+  additionalCommands: ""
 
-run:
-  persistenceMount: /data
-  exposedPort: 80
+artifacts:
+  - key: "./*"
+    value: /
