@@ -468,6 +468,42 @@ html { scroll-behavior: smooth; }
     .lang-switcher .sep {
       color: #ccc;
     }
+  
+    /* ── Nav fix ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: #fff;
+    }
+    .nav-links {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 24px;
+    }
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+    }
+    .lang-switcher a {
+      color: #999;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .lang-switcher a.active {
+      color: #111;
+    }
+    .lang-switcher .sep {
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -485,7 +521,8 @@ html { scroll-behavior: smooth; }
       <!-- fix 3: Паки removed -->
       <a href="#" class="nav-contact" class="nav-contact">Связаться</a>
     </div>
-  <div class="lang-switcher" id="lang-switcher"><span class="active" data-lang="ru">RU</span><span class="sep">/</span><span data-lang="en">EN</span></div></nav>
+  </nav>
+  <div class="lang-switcher" id="lang-switcher"><a href="/" id="lang-ru">RU</a><span class="sep"> / </span><a href="/en" id="lang-en">EN</a></div>
 
   <section id="hero">
     <img class="hero-img-full" src="hero.png" alt="Mihey Sound">
