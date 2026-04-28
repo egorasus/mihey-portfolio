@@ -6,8 +6,8 @@ meta:
     version: 20
 
 build:
-  additionalCommands: ""
+  additionalCommands: "echo done"
 
 artifacts:
-  - key: "./*"
+  - key: "./"
     value: /
