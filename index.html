@@ -447,6 +447,27 @@ html { scroll-behavior: smooth; }
       margin: 0 auto;
     }
 
+  
+    /* ── Lang switcher ── */
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      margin-left: 24px;
+    }
+    .lang-switcher span {
+      color: #999;
+      transition: color 0.2s;
+    }
+    .lang-switcher span.active {
+      color: #111;
+    }
+    .lang-switcher .sep {
+      color: #ccc;
+    }
   </style>
 </head>
 <body>
@@ -460,11 +481,11 @@ html { scroll-behavior: smooth; }
     <a href="#" class="nav-logo" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Mihey Sound</a>
     <div class="nav-links">
       <a href="#about">Обо мне</a>
-      <a href="#works">Кейсы</a>
+      <a href="#works" class="nav-cases">Кейсы</a>
       <!-- fix 3: Паки removed -->
-      <a href="#" class="nav-contact">Связаться</a>
+      <a href="#" class="nav-contact" class="nav-contact">Связаться</a>
     </div>
-  </nav>
+  <div class="lang-switcher" id="lang-switcher"><span class="active" data-lang="ru">RU</span><span class="sep">/</span><span data-lang="en">EN</span></div></nav>
 
   <section id="hero">
     <img class="hero-img-full" src="hero.png" alt="Mihey Sound">
@@ -1236,6 +1257,64 @@ function renderAbout(s) {
     });
   });
 }
+
+
+  // ── i18n language switcher ──
+  let LANG = localStorage.getItem('lang') || 'ru';
+
+  function applyLang(settings) {
+    const i = settings.i18n || {};
+    const ab = settings.about || {};
+
+    // Переключатель
+    document.querySelectorAll('#lang-switcher span[data-lang]').forEach(s => {
+      s.classList.toggle('active', s.dataset.lang === LANG);
+    });
+
+    // Хедер nav
+    const navAbout = document.querySelector('a[href="/#about"]');
+    if (navAbout) navAbout.textContent = LANG === 'ru' ? (i.nav_about_ru || 'Обо мне') : (i.nav_about_en || 'About');
+
+    const navCases = document.querySelector('.nav-cases');
+    if (navCases) navCases.textContent = LANG === 'ru' ? (i.nav_cases_ru || 'Кейсы') : (i.nav_cases_en || 'Work');
+
+    const navContact = document.querySelector('.nav-contact');
+    if (navContact) navContact.textContent = LANG === 'ru' ? (i.nav_contact_ru || 'Связаться') : (i.nav_contact_en || 'Contact');
+
+    // About label
+    const aboutLabel = document.querySelector('.about-label');
+    if (aboutLabel) aboutLabel.textContent = LANG === 'ru' ? (i.about_label_ru || 'Обо мне') : (i.about_label_en || 'About');
+
+    // About chapters
+    const chapters = [
+      { title_ru: ab.chapter1_title, title_en: ab.chapter1_title_en, text_ru: ab.chapter1_text, text_en: ab.chapter1_text_en },
+      { title_ru: ab.chapter2_title, title_en: ab.chapter2_title_en, text_ru: ab.chapter2_text, text_en: ab.chapter2_text_en },
+      { title_ru: ab.chapter3_title, title_en: ab.chapter3_title_en, text_ru: ab.chapter3_text, text_en: ab.chapter3_text_en },
+    ];
+    document.querySelectorAll('.about-chapter-btn').forEach((btn, i) => {
+      if (chapters[i]) btn.textContent = LANG === 'ru' ? (chapters[i].title_ru || '') : (chapters[i].title_en || chapters[i].title_ru || '');
+    });
+    document.querySelectorAll('.about-chapter-text').forEach((el, i) => {
+      if (chapters[i]) el.textContent = LANG === 'ru' ? (chapters[i].text_ru || '') : (chapters[i].text_en || chapters[i].text_ru || '');
+    });
+
+    // Футер
+    document.querySelectorAll('.footer-back, [data-i18n="back"]').forEach(el => {
+      el.textContent = LANG === 'ru' ? (i.footer_back_ru || '← Назад') : (i.footer_back_en || '← Back');
+    });
+  }
+
+  // Клик на переключатель
+  document.getElementById('lang-switcher')?.addEventListener('click', e => {
+    const span = e.target.closest('span[data-lang]');
+    if (!span) return;
+    LANG = span.dataset.lang;
+    localStorage.setItem('lang', LANG);
+    applyLang(settings);
+    // Перерендерить проекты с новым языком если нужно
+    if (typeof renderAbout === 'function') renderAbout(settings);
+    applyLang(settings);
+  });
 </script>
 </body>
 </html>

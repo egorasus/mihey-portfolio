@@ -160,6 +160,60 @@ body { font-family: var(--font); background: var(--gray); color: var(--black); m
         <div><label style="font-size:11px;color:#888;display:block;margin-bottom:4px">Глава 3 — текст</label><textarea id="s-about-ch3-text" rows="4" style="width:100%;padding:8px 12px;border:1px solid #e0e0e0;border-radius:6px;font-size:13px;font-family:inherit;resize:vertical"></textarea></div>
       </div>
     </div>
+          <div class="settings-group">
+            <h3>Навигация (RU / EN)</h3>
+            <div class="setting-row">
+              <label>«Обо мне» RU</label>
+              <input type="text" id="i18n_nav_about_ru" placeholder="Обо мне" />
+            </div>
+            <div class="setting-row">
+              <label>«About» EN</label>
+              <input type="text" id="i18n_nav_about_en" placeholder="About" />
+            </div>
+            <div class="setting-row">
+              <label>«Кейсы» RU</label>
+              <input type="text" id="i18n_nav_cases_ru" placeholder="Кейсы" />
+            </div>
+            <div class="setting-row">
+              <label>«Work» EN</label>
+              <input type="text" id="i18n_nav_cases_en" placeholder="Work" />
+            </div>
+            <div class="setting-row">
+              <label>«Связаться» RU</label>
+              <input type="text" id="i18n_nav_contact_ru" placeholder="Связаться" />
+            </div>
+            <div class="setting-row">
+              <label>«Contact» EN</label>
+              <input type="text" id="i18n_nav_contact_en" placeholder="Contact" />
+            </div>
+          </div>
+          <div class="settings-group">
+            <h3>About (EN версии глав)</h3>
+            <div class="setting-row">
+              <label>Глава 1 заголовок EN</label>
+              <input type="text" id="about_chapter1_title_en" placeholder="01. About me" />
+            </div>
+            <div class="setting-row">
+              <label>Глава 1 текст EN</label>
+              <textarea id="about_chapter1_text_en" rows="4"></textarea>
+            </div>
+            <div class="setting-row">
+              <label>Глава 2 заголовок EN</label>
+              <input type="text" id="about_chapter2_title_en" placeholder="02. Approach" />
+            </div>
+            <div class="setting-row">
+              <label>Глава 2 текст EN</label>
+              <textarea id="about_chapter2_text_en" rows="4"></textarea>
+            </div>
+            <div class="setting-row">
+              <label>Глава 3 заголовок EN</label>
+              <input type="text" id="about_chapter3_title_en" placeholder="03. Experience" />
+            </div>
+            <div class="setting-row">
+              <label>Глава 3 текст EN</label>
+              <textarea id="about_chapter3_text_en" rows="4"></textarea>
+            </div>
+          </div>
     <button type="button" onclick="saveSettings()" style="padding:10px 24px;background:#0a0a0a;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;margin-top:8px">Сохранить настройки</button>
   </div>
 </div>
