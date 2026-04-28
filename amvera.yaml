@@ -4,5 +4,7 @@ meta:
   toolchain:
     name: npm
     version: latest
-build: {}
+build:
+  artifacts:
+    "./": /
 run: {}
