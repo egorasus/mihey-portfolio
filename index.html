@@ -629,10 +629,14 @@ html { scroll-behavior: smooth; }
 </div>
 
 <script>
-history.replaceState({}, 'Mihey Sound', '/');
+const LANG = window.location.pathname.startsWith('/en') ? 'en' : 'ru';
+history.replaceState({}, 'Mihey Sound', LANG === 'en' ? '/en' : '/');
+document.getElementById('lang-ru') && document.getElementById('lang-ru').classList.toggle('active', LANG === 'ru');
+document.getElementById('lang-en') && document.getElementById('lang-en').classList.toggle('active', LANG === 'en');
 
 let DATA = [];
 let TAGS = [];
+let SETTINGS = {};
 
 /* ── fix 4: fit wordmark to full width ── */
 function fitWordmark(el) {
@@ -1214,6 +1218,8 @@ async function loadAndRender() {
       }
     });
     renderAbout(s);
+    SETTINGS = s;
+    applyLang(s);
   } catch(e) {}
   try {
     const base = '';
@@ -1280,26 +1286,8 @@ function renderAbout(s) {
 }
 
 
-  
-  
 
-  // Клик на переключатель
-  document.getElementById('lang-switcher')?.addEventListener('click', e => {
-    const span = e.target.closest('span[data-lang]');
-    if (!span) return;
-    LANG = span.dataset.lang;
-    localStorage.setItem('lang', LANG);
-    // Перерендерить проекты с новым языком если нужно
-    if (typeof renderAbout === 'function') renderAbout(settings);
-    applyLang(settings);
-  });
-
-  // ── i18n URL-based ──
-  const LANG = window.location.pathname.startsWith('/en') ? 'en' : 'ru';
-  document.getElementById('lang-ru') && document.getElementById('lang-ru').classList.toggle('active', LANG === 'ru');
-  document.getElementById('lang-en') && document.getElementById('lang-en').classList.toggle('active', LANG === 'en');
-
-  function applyLang(settings) {
+function applyLang(settings) {
     const i = settings.i18n || {};
     const ab = settings.about || {};
     const navAbout = document.querySelector('a[href="/#about"]');
